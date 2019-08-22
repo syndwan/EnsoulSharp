@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class Lucian : MyLogic
+    public class Lucian : MyLogic
     {
         private static bool havePassive = false;
         private static int lastCastTime = 0;
@@ -98,7 +98,6 @@
             DrawOption.AddQExtend(Q2);
             DrawOption.AddW(W);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, false, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -129,6 +128,11 @@
             }
 
             if (Me.HasBuff("LucianR") || Me.IsDashing())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -322,13 +326,13 @@
             {
                 if (LaneClearOption.UseQ && Q.IsReady())
                 {
-                    var qMinions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q.Range) && x.IsMinion()).ToArray();
+                    var qMinions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q.Range) && x.IsMinion()).ToList();
 
                     if (qMinions.Any())
                     {
                         foreach (var minion in qMinions)
                         {
-                            var q2Minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q2.Range) && x.IsMinion()).ToArray();
+                            var q2Minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q2.Range) && x.IsMinion()).ToList();
 
                             if (minion != null && minion.IsValidTarget(Q.Range) &&
                                 Q2.GetHitCounts(q2Minions, Me.PreviousPosition.Extend(minion.PreviousPosition, 900)) >= 2)
@@ -535,7 +539,7 @@
             {
                 var collisions =
                     GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q.Range) && (x.IsMinion() || x.GetJungleType() != JungleType.Unknown))
-                        .ToArray();
+                        .ToList();
 
                 if (!collisions.Any())
                 {

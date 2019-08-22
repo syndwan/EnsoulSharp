@@ -6,7 +6,7 @@
 
     #endregion
 
-    internal class MyBlockSpellData
+    public class MyBlockSpellData
     {
         public SpellSlot SpellSlot { get; set; }
         public string CharacterName { get; set; }

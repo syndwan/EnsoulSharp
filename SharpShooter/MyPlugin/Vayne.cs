@@ -17,7 +17,7 @@
 
     #endregion
 
-    internal class Vayne : MyLogic
+    public class Vayne : MyLogic
     {
         public Vayne()
         {
@@ -88,7 +88,6 @@
 
             DrawOption.AddMenu();
             DrawOption.AddE(E);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(false, true, true, false, true);
 
             Game.OnUpdate += OnUpdate;
@@ -114,6 +113,11 @@
             if (R.Level > 0 && R.IsReady())
             {
                 RLogic();
+            }
+
+            if (Me.IsWindingUp)
+            {
+                return;
             }
 
             KillSteal();
@@ -349,9 +353,9 @@
                     var minions =
                       GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Me.AttackRange + Me.BoundingRadius) && x.IsMinion())
                             .Where(m => m.Health <= Me.GetAutoAttackDamage(m) + Me.GetSpellDamage(m, SpellSlot.Q))
-                            .ToArray();
+                            .ToList();
 
-                    if (minions.Any() && minions.Length > 1)
+                    if (minions.Any() && minions.Count > 1)
                     {
                         var minion = minions.OrderBy(m => m.Health).FirstOrDefault();
                         var afterQPosition = Me.PreviousPosition.Extend(Game.CursorPosRaw, Q.Range);
@@ -369,7 +373,7 @@
         {
             if (JungleClearOption.HasEnouguMana() && JungleClearOption.UseE && E.IsReady())
             {
-                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown).ToArray();
+                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown).ToList();
 
                 if (mobs.Any())
                 {
@@ -471,9 +475,9 @@
                                             var minions =
                                                 GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Me.AttackRange + Me.BoundingRadius) && x.IsMinion())
                                                     .Where(x => x.Health <= Me.GetAutoAttackDamage(x) + Me.GetSpellDamage(x, SpellSlot.Q))
-                                                    .ToArray();
+                                                    .ToList();
 
-                                            if (minions.Any() && minions.Length >= 1)
+                                            if (minions.Any() && minions.Count >= 1)
                                             {
                                                 var minion = minions.OrderBy(x => x.Health).FirstOrDefault();
                                                 var afterQPosition = Me.PreviousPosition.Extend(Game.CursorPosRaw, Q.Range);
@@ -561,7 +565,7 @@
         private static Vector3 GetDashQPos()
         {
             var firstQPos = Me.PreviousPosition.Extend(Game.CursorPosRaw, Q.Range);
-            var allPoint = MyExtraManager.GetCirclePoints(Q.Range).ToArray();
+            var allPoint = MyExtraManager.GetCirclePoints(Q.Range).ToList();
 
             foreach (var point in allPoint)
             {
@@ -725,7 +729,7 @@
             return W.Level > 0 && target.Buffs.Any(x => x.Name.ToLower() == "vaynesilvereddebuff" && x.Count == 2);
         }
 
-        internal static double GetWDamage(AIBaseClient target)
+        public static double GetWDamage(AIBaseClient target)
         {
             if (target == null || target.IsDead || !target.IsValidTarget() || 
                 !target.Buffs.Any(x => x.Name.ToLower() == "vaynesilvereddebuff" && x.Count == 2))

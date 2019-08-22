@@ -20,8 +20,10 @@
 
     #endregion
 
-    internal class MissFortune : MyLogic
+    public class MissFortune : MyLogic
     {
+        private static int lastRTime;
+
         public MissFortune()
         {
             Initializer();
@@ -81,11 +83,11 @@
             DrawOption.AddQ(Q);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, false, true, true, true);
 
             Game.OnUpdate += OnUpdate;
             Orbwalker.OnAction += OnAction;
+            AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             //Gapcloser.OnGapcloser += OnGapcloser;
         }
 
@@ -96,7 +98,7 @@
                 return;
             }
 
-            if (Me.HasBuff("missfortunebulletsound"))
+            if (Variables.GameTimeTickCount - lastRTime < 3000)
             {
                 Orbwalker.AttackState = false;
                 Orbwalker.MovementState = false;
@@ -105,6 +107,11 @@
 
             Orbwalker.AttackState = true;
             Orbwalker.MovementState = true;
+
+            if (Me.IsWindingUp)
+            {
+                return;
+            }
 
             if (MiscOption.GetKey("R", "SemiR").Active && R.IsReady())
             {
@@ -266,7 +273,7 @@
             {
                 if (JungleClearOption.UseE && E.IsReady())
                 {
-                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown).ToArray();
+                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown).ToList();
 
                     if (mobs.Any())
                     {
@@ -349,6 +356,19 @@
             }
         }
 
+        private static void OnProcessSpellCast(AIBaseClient sender, AIBaseClientProcessSpellCastEventArgs args)
+        {
+            if (sender != null && sender.IsMe)
+            {
+                if (args.Slot == SpellSlot.R)
+                {
+                    lastRTime = Variables.GameTimeTickCount;
+                    Orbwalker.AttackState = false;
+                    Orbwalker.MovementState = false;
+                }
+            }
+        }
+
         //private static void OnGapcloser(AIHeroClient target, GapcloserArgs Args)
         //{
         //    if (E.IsReady() && target != null && target.IsValidTarget(E.Range))
@@ -394,7 +414,7 @@
                     {
                         var minions =
                             GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q2.Range) && (x.GetJungleType() != JungleType.Unknown || x.IsMinion()))
-                                .ToArray();
+                                .ToList();
 
                         if (minions.Any(m => m.IsMoving) && !heroPositions.Any(h => h.Hero.HasBuff("missfortunepassive")))
                         {

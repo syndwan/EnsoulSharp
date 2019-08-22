@@ -16,7 +16,7 @@
 
     #endregion
 
-    internal class Twitch : MyLogic
+    public class Twitch : MyLogic
     {
         public Twitch()
         {
@@ -74,7 +74,6 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(false, false, true, false, false);
 
             Game.OnUpdate += OnUpdate;
@@ -84,6 +83,11 @@
         private static void OnUpdate(EventArgs args)
         {
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -262,7 +266,7 @@
             {
                 if (JungleClearOption.UseE && E.IsReady())
                 {
-                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown).ToArray();
+                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown).ToList();
 
                     foreach (
                         var mob in
@@ -391,25 +395,17 @@
             return 0d;
         }
 
-        internal static double GetEDMGTwitch(AIBaseClient target)
+        public static double GetEDMGTwitch(AIBaseClient target)
         {
             if (target.Buffs.All(b => b.Name.ToLower() != "twitchdeadlyvenom"))
             {
                 return 0;
             }
 
-            double eDamage = 0;
-
-            var basicDMG = new double[] { 20, 35, 50, 65, 80 }[Me.Spellbook.GetSpell(SpellSlot.E).Level - 1];
-            var countDMG = new double[] { 15, 20, 25, 30, 35 }[Me.Spellbook.GetSpell(SpellSlot.E).Level - 1] +
-                           0.25f * Me.FlatPhysicalDamageMod + 0.20f * Me.FlatMagicDamageMod;
-
-            eDamage = basicDMG + countDMG * GetEStackCount(target);
-
-            return Me.CalculateDamage(target, DamageType.Physical, eDamage);
+            return E.GetDamage(target);
         }
 
-        internal static int GetEStackCount(AIBaseClient target)
+        public static int GetEStackCount(AIBaseClient target)
         {
             if (target == null || target.IsDead ||
                 !target.IsValidTarget() ||

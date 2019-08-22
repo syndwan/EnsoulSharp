@@ -14,14 +14,14 @@
 
     #endregion
 
-    internal class MyEvadeManager
+    public class MyEvadeManager
     {
         public static Menu Menu;
         private static int RivenQTime;
         private static float RivenQRange;
         private static Vector2 RivenDashPos;
 
-        internal static void Attach(Menu evadeMenu)
+        public static void Attach(Menu evadeMenu)
         {
             Menu = evadeMenu;
 
@@ -201,7 +201,7 @@
                     x =>
                         string.Equals(x.CharacterName, target.CharacterName, StringComparison.CurrentCultureIgnoreCase) &&
                          Menu["Block" + target.CharacterName.ToLower()]["BlockSpell" + x.SpellSlot.ToString()] != null &&
-                        Menu["Block" + target.CharacterName.ToLower()]["BlockSpell" + x.SpellSlot.ToString()].GetValue<MenuBool>().Enabled).ToArray();
+                        Menu["Block" + target.CharacterName.ToLower()]["BlockSpell" + x.SpellSlot.ToString()].GetValue<MenuBool>().Enabled).ToList();
 
             if (spells.Any())
             {

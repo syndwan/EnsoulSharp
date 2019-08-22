@@ -10,7 +10,7 @@
 
     #endregion
 
-    internal class MyTargetSelector
+    public class MyTargetSelector
     {
         public static AIHeroClient GetTarget(float range, bool ForcusOrbwalkerTarget = true, bool checkKillAble = true, bool checkShield = false)
         {

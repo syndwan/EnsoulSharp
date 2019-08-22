@@ -17,7 +17,7 @@
 
     #endregion
 
-    internal class Sivir : MyLogic
+    public class Sivir : MyLogic
     {
         public Sivir()
         {
@@ -72,7 +72,6 @@
 
             DrawOption.AddMenu();
             DrawOption.AddQ(Q);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, false, false, false, true);
 
             Game.OnUpdate += OnUpdate;
@@ -82,6 +81,11 @@
         private static void OnUpdate(EventArgs args)
         {
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -233,12 +237,11 @@
             {
                 if (JungleClearOption.UseQ && Q.IsReady())
                 {
-                    var mobs = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown).ToList();
+                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown).ToList();
 
                     if (mobs.Any())
                     {
-                        var qFarm = Q.GetLineFarmLocation(mobs);
-
+                        var qFarm = Q.GetLineFarmLocation(mobs, 30);
                         if (qFarm.MinionsHit >= 2 || mobs.Any(x => x.GetJungleType() != JungleType.Small) && qFarm.MinionsHit >= 1)
                         {
                             Q.Cast(qFarm.Position);

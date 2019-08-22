@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class Ezreal : MyLogic
+    public class Ezreal : MyLogic
     {
         public Ezreal()
         {
@@ -88,7 +88,6 @@
             DrawOption.AddQ(Q);
             DrawOption.AddW(W);
             DrawOption.AddE(E);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -108,7 +107,7 @@
                 R.Range = MiscOption.GetSlider("R", "RMaxRange").Value;
             }
 
-            if (MiscOption.GetKey("R", "SemiR").Active && R.IsReady())
+            if (MiscOption.GetKey("R", "SemiR").Active)
             {
                 OneKeyCastR();
             }
@@ -139,8 +138,14 @@
 
         private static void OneKeyCastR()
         {
-            var target = MyTargetSelector.GetTarget(R.Range);
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
 
+            if (!R.IsReady())
+            {
+                return;
+            }
+
+            var target = MyTargetSelector.GetTarget(R.Range);
             if (target.IsValidTarget(R.Range) && !target.IsValidTarget(MiscOption.GetSlider("R", "RRange").Value))
             {
                 var rPred = R.GetPrediction(target);
@@ -368,6 +373,11 @@
 
         private static void FarmHarass()
         {
+            if (Me.IsWindingUp)
+            {
+                return;
+            }
+
             if (MyManaManager.SpellHarass)
             {
                 Harass();
@@ -386,7 +396,7 @@
             {
                 if (LaneClearOption.UseQ && Q.IsReady())
                 {
-                    var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q.Range) && x.IsMinion()).ToArray();
+                    var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Q.Range) && x.IsMinion()).ToList();
 
                     if (minions.Any())
                     {
@@ -413,21 +423,25 @@
         {
             if (JungleClearOption.HasEnouguMana())
             {
-                if (JungleClearOption.UseQ && Q.IsReady())
+                if (JungleClearOption.UseW && W.IsReady())
                 {
-                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() !=  JungleType.Unknown).ToArray();
-                    if (mobs.Any())
+                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() == JungleType.Legendary)
+                        .OrderByDescending(x => x.MaxHealth)
+                        .ToList();
+                    foreach (var mob in mobs)
                     {
-                        Q.Cast(mobs[0]);
+                        W.CastIfHitchanceEquals(mob, HitChance.Medium);
                     }
                 }
 
-                if (JungleClearOption.UseW && W.IsReady())
+                if (JungleClearOption.UseQ && Q.IsReady())
                 {
-                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown && x.GetJungleType() != JungleType.Small).ToArray();
-                    if (mobs.Any())
+                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown)
+                        .OrderByDescending(x => x.MaxHealth)
+                        .ToList();
+                    foreach (var mob in mobs)
                     {
-                        W.Cast(mobs[0]);
+                        Q.CastIfHitchanceEquals(mob, HitChance.Medium);
                     }
                 }
             }
@@ -445,11 +459,11 @@
                                 x =>
                                     x.DistanceToPlayer() <= Q.Range &&
                                     x.DistanceToPlayer() > Me.GetRealAutoAttackRange(x) &&
-                                    x.Health < Me.GetSpellDamage(x, SpellSlot.Q)).ToArray();
+                                    x.Health < Me.GetSpellDamage(x, SpellSlot.Q)).ToList();
 
                     if (minions.Any())
                     {
-                        Q.Cast(minions[0]);
+                        Q.CastIfHitchanceEquals(minions[0], HitChance.Medium);
                     }
                 }
             }

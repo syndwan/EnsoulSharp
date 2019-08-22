@@ -22,7 +22,7 @@
 
     #endregion
 
-    internal class Caitlyn : MyLogic
+    public class Caitlyn : MyLogic
     {
         private static int lastQTime, lastWTime;
 
@@ -36,10 +36,10 @@
         private static void Initializer()
         {
             Q = new Spell(SpellSlot.Q, 1250f);
-            Q.SetSkillshot(0.50f, 50f, 2000f, false, false, SkillshotType.Line);
+            Q.SetSkillshot(0.70f, 50f, 2000f, false, false, SkillshotType.Line);
 
             W = new Spell(SpellSlot.W, 800f);
-            W.SetSkillshot(0.80f, 80f, 2000f, false, true, SkillshotType.Circle);
+            W.SetSkillshot(0.80f, 80f, 2000f, false, false, SkillshotType.Circle);
 
             E = new Spell(SpellSlot.E, 750f);
             E.SetSkillshot(0.25f, 60f, 1600f, true, false, SkillshotType.Line);
@@ -95,7 +95,6 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, false, true, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -106,6 +105,11 @@
         private static void OnUpdate(EventArgs args)
         {
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -170,7 +174,7 @@
                     foreach (
                         var target in
                         GameObjects.EnemyHeroes.Where(
-                            x => x.IsValidTarget(W.Range) && !x.CanMoveMent() && !x.HasBuff("caitlynyordletrapinternal")))
+                            x => x.IsValidTarget(W.Range) && !x.CanMoveMent() && !x.HasBuff("caitlynyordletrappublic")))
                     {
                         if (Variables.GameTimeTickCount - lastWTime > 1500)
                         {
@@ -241,8 +245,7 @@
                         {
                             if (E.Cast(ePred.CastPosition))
                             {
-                                //Q.Cast(target.PreviousPosition);
-                                System.Console.WriteLine("1");
+
                             }
                         }
                         else
@@ -260,8 +263,7 @@
 
                                 if (qPred.Hitchance >= HitChance.High)
                                 {
-                                    Q.Cast(target.PreviousPosition);
-                                    System.Console.WriteLine("2");
+                                    Q.Cast(qPred.CastPosition);
                                 }
 
                                 if (ComboOption.GetSlider("ComboQCount").Value != 0 &&
@@ -283,7 +285,6 @@
                         if (qPred.Hitchance >= HitChance.High)
                         {
                             Q.Cast(qPred.CastPosition);
-                            System.Console.WriteLine("3");
                         }
 
                         if (ComboOption.GetSlider("ComboQCount").Value != 0 &&
@@ -395,7 +396,6 @@
                     if (target.IsValidTarget(Q.Range))
                     {
                         var qPred = Q.GetPrediction(target);
-
                         if (qPred.Hitchance >= HitChance.High)
                         {
                             Q.Cast(qPred.CastPosition);
@@ -449,12 +449,12 @@
                 {
                     var mobs =
                         GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown)
-                            .OrderBy(x => x.MaxHealth)
-                            .ToArray();
+                            .OrderByDescending(x => x.MaxHealth)
+                            .ToList();
 
                     if (mobs.Any())
                     {
-                        Q.Cast(mobs[0]);
+                        Q.CastIfHitchanceEquals(mobs[0], HitChance.Medium);
                     }
                 }
             }

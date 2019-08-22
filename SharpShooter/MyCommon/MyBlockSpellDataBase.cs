@@ -8,7 +8,7 @@
 
     #endregion
 
-    internal static class MyBlockSpellDataBase
+    public static class MyBlockSpellDataBase
     {
         public static List<MyBlockSpellData> Spells = new List<MyBlockSpellData>();
 

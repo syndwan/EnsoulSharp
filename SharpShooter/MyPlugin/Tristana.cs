@@ -3,28 +3,23 @@
     #region
 
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-
-    using SharpDX;
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
-    using EnsoulSharp.SDK.Utility;
 
     using SharpShooter.MyBase;
     using SharpShooter.MyCommon;
 
-    using Color = System.Drawing.Color;
     using Keys = System.Windows.Forms.Keys;
 
     using static SharpShooter.MyCommon.MyMenuExtensions;
 
     #endregion
 
-    internal class Tristana : MyLogic
+    public class Tristana : MyLogic
     {
         public Tristana()
         {
@@ -84,7 +79,6 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(false, false, true, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -103,6 +97,11 @@
             }
 
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -318,7 +317,7 @@
         {
             if (JungleClearOption.HasEnouguMana())
             {
-                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown && x.GetJungleType() != JungleType.Small).ToArray();
+                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown && x.GetJungleType() != JungleType.Small).ToList();
 
                 if (mobs.Any())
                 {

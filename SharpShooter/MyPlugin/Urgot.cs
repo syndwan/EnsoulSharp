@@ -21,7 +21,7 @@
 
     #endregion
 
-    internal class Urgot : MyLogic
+    public class Urgot : MyLogic
     {
         private static int lastQTime, lastWTime, lastETime, lastPressTime;
 
@@ -51,12 +51,12 @@
         private static void Initializer()
         {
             Q = new Spell(SpellSlot.Q, 800f);
-            Q.SetSkillshot(0.41f, 180f, float.MaxValue, false, false, SkillshotType.Circle);
+            Q.SetSkillshot(0.41f, 180f, float.MaxValue, false, true, SkillshotType.Circle);
 
             W = new Spell(SpellSlot.W, 550f);
 
             E = new Spell(SpellSlot.E, 550f);
-            E.SetSkillshot(0.40f, 65f, 580f, false, false, SkillshotType.Line);
+            E.SetSkillshot(0.40f, 65f, 580f, false, true, SkillshotType.Line);
 
             R = new Spell(SpellSlot.R, 1600f);
             R.SetSkillshot(0.20f, 80f, 2150f, false, false, SkillshotType.Line);
@@ -101,8 +101,7 @@
             DrawOption.AddQ(Q);
             DrawOption.AddW(W);
             DrawOption.AddE(E);
-            DrawOption.AddE(R);
-            DrawOption.AddFarm();
+            DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
@@ -149,6 +148,11 @@
             if (MiscOption.GetKey("R", "SemiR").Active && R.IsReady())
             {
                 SemiRLogic();
+            }
+
+            if (Me.IsWindingUp)
+            {
+                return;
             }
 
             AutoR2Logic();
@@ -350,9 +354,9 @@
                         {
                             var minions =
                                 GameObjects.EnemyMinions.Where(x => x.IsValidTarget(W.Range - 65) && (x.IsMinion() || x.GetJungleType() != JungleType.Unknown))
-                                    .ToArray();
+                                    .ToList();
 
-                            if (!minions.Any() || minions.Length <= 3 && target.IsValidTarget(410))
+                            if (!minions.Any() || minions.Count <= 3 && target.IsValidTarget(410))
                             {
                                 W.Cast();
                             }
@@ -450,11 +454,11 @@
                 if (LaneClearOption.GetSliderBool("LaneClearWCount").Enabled && W.IsReady() && !isWActive)
                 {
                     var minions =
-                        GameObjects.EnemyMinions.Where(x => x.IsValidTarget(W.Range) && x.IsMinion()).ToArray();
+                        GameObjects.EnemyMinions.Where(x => x.IsValidTarget(W.Range) && x.IsMinion()).ToList();
 
                     if (minions.Any())
                     {
-                        if (minions.Length >= LaneClearOption.GetSliderBool("LaneClearWCount").Value)
+                        if (minions.Count >= LaneClearOption.GetSliderBool("LaneClearWCount").Value)
                         {
                             W.Cast();
                         }
@@ -507,9 +511,9 @@
                         }
                         else
                         {
-                            var wMobs = mobs.Where(x => x.IsValidTarget(W.Range)).ToArray();
+                            var wMobs = mobs.Where(x => x.IsValidTarget(W.Range)).ToList();
 
-                            if (wMobs.Length >= 2)
+                            if (wMobs.Count >= 2)
                             {
                                 W.Cast();
                             }
@@ -646,7 +650,7 @@
             return rPredOutput.CastPosition;
         }
 
-        internal static double GetWDamage(AIBaseClient target, int time = 1)
+        public static double GetWDamage(AIBaseClient target, int time = 1)
         {
             if (target == null || !target.IsValidTarget())
             {
@@ -658,7 +662,7 @@
             return Me.CalculateDamage(target, DamageType.Physical, wDMG);
         }
 
-        internal static double GetRDamage(AIHeroClient target, bool calculate25 = false)
+        public static double GetRDamage(AIHeroClient target, bool calculate25 = false)
         {
             if (target == null || !target.IsValidTarget())
             {

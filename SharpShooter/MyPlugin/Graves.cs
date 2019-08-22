@@ -17,7 +17,7 @@
 
     #endregion
 
-    internal class Graves : MyLogic
+    public class Graves : MyLogic
     {
         public Graves()
         {
@@ -77,13 +77,12 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, false, true, true);
 
             Game.OnUpdate += OnUpdate;
             Orbwalker.OnAction += OnAction;
             //Gapcloser.OnGapcloser += OnGapcloser;
-            Player.OnIssueOrder += OnIssueOrder;
+            AIBaseClient.OnBasicAttack += OnBasicAttack;
             Spellbook.OnCastSpell += OnCastSpell;
         }
 
@@ -94,21 +93,24 @@
                 return;
             }
 
+            if (Me.IsWindingUp)
+            {
+                return;
+            }
+
             KillSteal();
 
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+            switch (Orbwalker.ActiveMode)
             {
-                Combo();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Harass)
-            {
-                Harass();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear)
-            {
-                FarmHarass();
+                case OrbwalkerMode.Combo:
+                    Combo();
+                    break;
+                case OrbwalkerMode.Harass:
+                    Harass();
+                    break;
+                case OrbwalkerMode.LaneClear:
+                    FarmHarass();
+                    break;
             }
         }
 
@@ -155,7 +157,7 @@
                     GameObjects.EnemyHeroes.Where(
                         x => x.IsValidTarget(R.Range) &&
                              KillStealOption.GetKillStealTarget(x.CharacterName.ToLower()) &&
-                             x.Health < Me.GetSpellDamage(x, SpellSlot.R) + Me.GetSpellDamage(x, SpellSlot.R) &&
+                             x.Health < Me.GetSpellDamage(x, SpellSlot.R) &&
                              x.DistanceToPlayer() >
                              Me.AttackRange + Me.BoundingRadius + Me.BoundingRadius + 30))
                 {
@@ -327,7 +329,7 @@
                                     var mobs =
                                         GameObjects.Jungle.Where(x => x.IsValidTarget(800) && x.GetJungleType() != JungleType.Unknown)
                                             .Where(x => x.GetJungleType() != JungleType.Unknown)
-                                            .ToArray();
+                                            .ToList();
 
                                     if (mobs.Any() && mobs.FirstOrDefault() != null)
                                     {
@@ -366,14 +368,14 @@
         //    }
         //}
 
-        private static void OnIssueOrder(AIBaseClient sender, PlayerIssueOrderEventArgs Args)
+        private static void OnBasicAttack(AIBaseClient sender, AIBaseClientProcessSpellCastEventArgs Args)
         {
             if (!sender.IsMe)
             {
                 return;
             }
 
-            if (Args.Order != GameObjectOrder.AttackUnit || !E.IsReady())
+            if (!E.IsReady())
             {
                 return;
             }
@@ -389,39 +391,44 @@
                 return;
             }
 
-            if (!Orbwalker.CanAttack() || !target.IsValidTarget(Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20))
+            if (!Orbwalker.CanAttack() || Me.IsWindingUp || !target.IsValidTarget(Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20))
             {
-                Args.Process = false;
                 return;
             }
 
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo && ComboOption.UseE && 
+            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo && ComboOption.UseE &&
                 ComboOption.GetBool("ComboEReset").Enabled && target.Type == GameObjectType.AIHeroClient)
             {
-                if(ELogic((AIHeroClient)target))
+                DelayAction.Add(0, () =>
                 {
-                    DelayAction.Add(1, Orbwalker.ResetAutoAttackTimer);
-                }
+                    if (ELogic((AIHeroClient)target))
+                    {
+                        Orbwalker.ResetAutoAttackTimer();
+                    }
+                });
             }
-            else if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear && JungleClearOption.HasEnouguMana() && 
-                JungleClearOption.UseE && target is AIMinionClient)
+            else if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear && JungleClearOption.HasEnouguMana() &&
+                     JungleClearOption.UseE && target is AIMinionClient)
             {
                 var mob = (AIMinionClient)target;
                 if (mob != null && mob.GetJungleType() != JungleType.Unknown && mob.GetJungleType() != JungleType.Small)
                 {
-                    if (ELogic(mob))
+                    DelayAction.Add(0, () =>
                     {
-                        DelayAction.Add(1, Orbwalker.ResetAutoAttackTimer);
-                    }
+                        if (ELogic(mob))
+                        {
+                            Orbwalker.ResetAutoAttackTimer();
+                        }
+                    });
                 }
             }
         }
 
         private static void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs Args)
         {
-            if (sender?.Owner != null && sender.Owner.IsMe && Args.Slot == SpellSlot.E && Orbwalker.ActiveMode != OrbwalkerMode.None)
+            if (Args.Slot == SpellSlot.E)
             {
-                Orbwalker.ResetAutoAttackTimer();
+                DelayAction.Add(0, Orbwalker.ResetAutoAttackTimer);
             }
         }
 
@@ -432,8 +439,7 @@
                 return false;
             }
 
-            var ePosition = Me.PreviousPosition.Extend(Game.CursorPosRaw, E.Range);
-
+            var ePosition = Me.Position.Extend(Game.CursorPosRaw, E.Range);
             if (ePosition.IsUnderEnemyTurret() && Me.HealthPercent <= 50)
             {
                 return false;
@@ -480,22 +486,22 @@
                 return false;
             }
 
-            if (target.Health < Me.GetAutoAttackDamage(target) * 2 &&
-                target.Distance(Me.PreviousPosition.Extend(Game.CursorPosRaw, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
+            if (/*target.Health < Me.GetAutoAttackDamage(target) * 2 &&*/
+                target.Distance(Me.Position.Extend(Game.CursorPosRaw, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
             {
-                return E.Cast(Me.PreviousPosition.Extend(Game.CursorPosRaw, E.Range));
+                return E.Cast(Me.Position.Extend(Game.CursorPosRaw, E.Range));
             }
 
-            if (!Me.HasBuff("gravesbasicattackammo2") && Me.HasBuff("gravesbasicattackammo1") &&
-                     target.Distance(Me.PreviousPosition.Extend(Game.CursorPosRaw, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
+            if (/*!Me.HasBuff("gravesbasicattackammo2") && Me.HasBuff("gravesbasicattackammo1") &&*/
+                     target.Distance(Me.Position.Extend(Game.CursorPosRaw, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
             {
-                return E.Cast(Me.PreviousPosition.Extend(Game.CursorPosRaw, E.Range));
+                return E.Cast(Me.Position.Extend(Game.CursorPosRaw, E.Range));
             }
 
-            if (!Me.HasBuff("gravesbasicattackammo2") && !Me.HasBuff("gravesbasicattackammo1") &&
+            if (/*!Me.HasBuff("gravesbasicattackammo2") && !Me.HasBuff("gravesbasicattackammo1") &&*/
                      target.IsValidTarget(Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20))
             {
-                return E.Cast(Me.PreviousPosition.Extend(Game.CursorPosRaw, E.Range));
+                return E.Cast(Me.Position.Extend(Game.CursorPosRaw, E.Range));
             }
 
             return false;

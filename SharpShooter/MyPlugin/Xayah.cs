@@ -21,7 +21,7 @@
 
     #endregion
 
-    internal class Xayah : MyLogic
+    public class Xayah : MyLogic
     {
         private static List<MyFeather> FeatherList = new List<MyFeather>();
 
@@ -84,7 +84,6 @@
             DrawOption.AddMenu();
             DrawOption.AddQ(Q);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(false, false, true, false, false);
 
             CPrediction.BoundingRadiusMultiplicator = 1.15f;
@@ -111,6 +110,11 @@
             if (Me.HasBuff("XayahR"))
             {
                 Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                return;
+            }
+
+            if (Me.IsWindingUp)
+            {
                 return;
             }
 
@@ -279,7 +283,7 @@
             {
                 var mobs =
                     GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown)
-                        .OrderBy(x => x.MaxHealth)
+                        .OrderByDescending(x => x.MaxHealth)
                         .ToList();
 
                 if (mobs.Any())
@@ -292,7 +296,7 @@
                             (bigMob.DistanceToPlayer() > Me.GetRealAutoAttackRange(bigMob) ||
                              !Orbwalker.CanAttack()))
                         {
-                            Q.Cast(bigMob);
+                            Q.CastIfHitchanceEquals(bigMob, HitChance.Medium);
                         }
 
                         if (JungleClearOption.UseE && E.IsReady() && bigMob.IsValidTarget())
@@ -484,7 +488,7 @@
             }
         }
 
-        internal static double GetEDamageForMinion(AIBaseClient target)
+        public static double GetEDamageForMinion(AIBaseClient target)
         {
             if (HitECount(target) == 0)
             {
@@ -493,7 +497,7 @@
             return GetEDMG(target, HitECount(target)) * 0.5;
         }
 
-        internal static double GetEDMG(AIBaseClient target, int eCount)
+        public static double GetEDMG(AIBaseClient target, int eCount)
         {
             if (eCount == 0)
             {
@@ -525,7 +529,7 @@
             return MyExtraManager.GetRealDamage(eDMG, target);
         }
 
-        internal static int HitECount(AIBaseClient target)
+        public static int HitECount(AIBaseClient target)
         {
             return
                 FeatherList.Select(

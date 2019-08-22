@@ -16,7 +16,7 @@
 
     #endregion
 
-    internal class Quinn : MyLogic
+    public class Quinn : MyLogic
     {
         public Quinn()
         {
@@ -71,7 +71,6 @@
             DrawOption.AddMenu();
             DrawOption.AddQ(Q);
             DrawOption.AddE(E);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, false, true, false, true);
 
             Game.OnUpdate += OnUpdate;
@@ -92,6 +91,11 @@
                 {
                     Orbwalker.ForceTarget = null;
                 }
+            }
+
+            if (Me.IsWindingUp)
+            {
+                return;
             }
 
             KillSteal();
@@ -293,7 +297,7 @@
                     {
                         var all =
                             GameObjects.EnemyMinions.Where(x => x.InAutoAttackRange() && HavePassive(x))
-                                .OrderBy(x => x.MaxHealth)
+                                .OrderByDescending(x => x.MaxHealth)
                                 .FirstOrDefault();
 
                         if (all.InAutoAttackRange())

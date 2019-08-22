@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class Ashe : MyLogic
+    public class Ashe : MyLogic
     {
         public Ashe()
         {
@@ -80,7 +80,6 @@
             DrawOption.AddMenu();
             DrawOption.AddW(W);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(false, true, false, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -91,6 +90,11 @@
         private static void OnUpdate(EventArgs args)
         {
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -126,7 +130,8 @@
 
                 if (target != null && !target.HasBuffOfType(BuffType.SpellShield) && target.IsValidTarget(R.Range))
                 {
-                    var rPred = R.GetPrediction(target);
+                    var rPred = R.GetPrediction(target,
+                        collisionable: CollisionObjects.Heroes | CollisionObjects.YasuoWall);
 
                     if (rPred.Hitchance >= HitChance.High)
                     {
@@ -195,7 +200,6 @@
             if (ComboOption.UseQ && Q.IsReady() && Orbwalker.GetTarget() != null)
             {
                 var target = Orbwalker.GetTarget() as AIHeroClient;
-
                 if (target != null && !target.IsDead && target.InAutoAttackRange())
                 {
                     if (Me.HasBuff("asheqcastready"))
@@ -353,7 +357,9 @@
             {
                 if (JungleClearOption.UseW && !Me.HasBuff("AsheQAttack"))
                 {
-                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(W.Range) && x.GetJungleType() !=  JungleType.Unknown).ToList();
+                    var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(W.Range) && x.GetJungleType() !=  JungleType.Unknown)
+                        .OrderByDescending(x => x.MaxHealth)
+                        .ToList();
 
                     if (mobs.Any())
                     {

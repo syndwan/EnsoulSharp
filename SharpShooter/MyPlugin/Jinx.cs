@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class Jinx : MyLogic
+    public class Jinx : MyLogic
     {
         private static float bigGunRange { get; set; }
         private static float rCoolDown { get; set; }
@@ -88,7 +88,6 @@
             DrawOption.AddMenu();
             DrawOption.AddW(W);
             DrawOption.AddE(E);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(false, true, false, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -96,10 +95,14 @@
             //Gapcloser.OnGapcloser += OnGapcloser;
         }
 
-        //https://github.com/ensoulsharp-io/EnsoulSharp.Assemblies/blob/master/Third_Port/Mask/Executable/OneKeyToWin_AIO_Sebby/Champions/Jinx.cs#L128-L131
         private static void OnUpdate(EventArgs args)
         {
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -111,6 +114,7 @@
 
             if (W.Level > 0)
             {
+                //https://github.com/ensoulsharp-io/EnsoulSharp.Assemblies/blob/master/Third_Port/Mask/Executable/OneKeyToWin_AIO_Sebby/Champions/Jinx.cs#L128-L131
                 W.Delay = Math.Max(0.4f, (600 - Me.PercentAttackSpeedMod / 2.5f * 200) / 1000f);
             }
 
@@ -125,7 +129,7 @@
                     : Me.Spellbook.GetSpell(SpellSlot.R).CooldownExpires - Game.Time)
                 : -1;
 
-            if (MiscOption.GetKey("R", "rMenuSemi").Active && R.IsReady())
+            if (MiscOption.GetKey("R", "rMenuSemi").Active)
             {
                 SemiRLogic();
             }
@@ -133,19 +137,17 @@
             AutoLogic();
             KillSteal();
 
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+            switch (Orbwalker.ActiveMode)
             {
-                Combo();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo)
-            {
-                Harass();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear)
-            {
-                FarmHarass();
+                case OrbwalkerMode.Combo:
+                    Combo();
+                    break;
+                case OrbwalkerMode.Harass:
+                    Harass();
+                    break;
+                case OrbwalkerMode.LaneClear:
+                    FarmHarass();
+                    break;
             }
         }
 
@@ -195,8 +197,14 @@
 
         private static void SemiRLogic()
         {
-            var target = MyTargetSelector.GetTarget(R.Range);
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
 
+            if (!R.IsReady())
+            {
+                return;
+            }
+
+            var target = MyTargetSelector.GetTarget(R.Range);
             if (target.IsValidTarget(R.Range))
             {
                 var rPred = R.GetPrediction(target);
@@ -470,8 +478,8 @@
             {
                 var mobs =
                     GameObjects.Jungle.Where(x => x.IsValidTarget(bigGunRange) && x.GetJungleType() != JungleType.Unknown)
-                        .OrderBy(x => x.MaxHealth)
-                        .ToArray();
+                        .OrderByDescending(x => x.MaxHealth)
+                        .ToList();
 
                 if (mobs.Any())
                 {
@@ -508,7 +516,7 @@
                                 }
                             }
 
-                            if (mobs.Length < 2)
+                            if (mobs.Count < 2)
                             {
                                 if (Orbwalker.CanAttack())
                                 {
@@ -577,8 +585,7 @@
             {
                 case GameObjectType.AIHeroClient:
                     {
-                        var target = Args.Target as AIHeroClient;
-
+                        var target = (AIHeroClient)Args.Target;
                         if (target != null && target.IsValidTarget())
                         {
                             if (Orbwalker.ActiveMode == OrbwalkerMode.Combo)
@@ -655,10 +662,10 @@
                         {
                             if (LaneClearOption.HasEnouguMana() && Q.IsReady() && LaneClearOption.UseQ)
                             {
-                                var min = Args.Target as AIBaseClient;
+                                var min = (AIBaseClient)Args.Target;
                                 var minions =
                                     GameObjects.EnemyMinions.Where(x => x.IsValidTarget(bigGunRange) && x.IsMinion())
-                                        .ToArray();
+                                        .ToList();
 
                                 if (minions.Any() && min != null)
                                 {
@@ -695,7 +702,7 @@
                                         }
                                     }
 
-                                    if (minions.Length <= 2 && Me.HasBuff("JinxQ"))
+                                    if (minions.Count <= 2 && Me.HasBuff("JinxQ"))
                                     {
                                         Q.Cast();
                                     }

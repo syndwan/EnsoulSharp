@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class KogMaw : MyLogic
+    public class KogMaw : MyLogic
     {
         private static int GetRCount => Me.HasBuff("kogmawlivingartillerycost") ? Me.GetBuffCount("kogmawlivingartillerycost") : 0;
 
@@ -99,7 +99,6 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -110,6 +109,11 @@
         private static void OnUpdate(EventArgs args)
         {
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -131,19 +135,17 @@
 
             KillSteal();
 
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+            switch (Orbwalker.ActiveMode)
             {
-                Combo();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Harass)
-            {
-                Harass();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear)
-            {
-                FarmHarass();
+                case OrbwalkerMode.Combo:
+                    Combo();
+                    break;
+                case OrbwalkerMode.Harass:
+                    Harass();
+                    break;
+                case OrbwalkerMode.LaneClear:
+                    FarmHarass();
+                    break;
             }
         }
 
@@ -349,7 +351,7 @@
         {
             if (LaneClearOption.HasEnouguMana())
             {
-                var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(R.Range) && x.IsMinion()).ToArray();
+                var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(R.Range) && x.IsMinion()).ToList();
 
                 if (minions.Any())
                 {
@@ -397,7 +399,7 @@
         {
             if (JungleClearOption.HasEnouguMana())
             {
-                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(R.Range) && x.GetJungleType() != JungleType.Unknown).ToArray();
+                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(R.Range) && x.GetJungleType() != JungleType.Unknown).ToList();
 
                 if (mobs.Any())
                 {
@@ -483,7 +485,7 @@
                     {
                         if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear && JungleClearOption.HasEnouguMana())
                         {
-                            var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(R.Range) && x.GetJungleType() != JungleType.Unknown).ToArray();
+                            var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(R.Range) && x.GetJungleType() != JungleType.Unknown).ToList();
 
                             if (mobs.Any())
                             {

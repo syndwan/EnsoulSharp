@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class Varus : MyLogic
+    public class Varus : MyLogic
     {
         private static int lastQTime, lastETime;
 
@@ -46,6 +46,7 @@
             ComboOption.AddQ();
             ComboOption.AddSlider("ComboQPassive", "Use Q |Target Stack Count >= x", 3, 0, 3);
             ComboOption.AddBool("ComboQFast", "Use Q |Fast Cast");
+            ComboOption.AddW();
             ComboOption.AddE();
             ComboOption.AddSlider("ComboEPassive", "Use E |Target Stack Count >= x", 3, 0, 3);
             ComboOption.AddR();
@@ -86,7 +87,6 @@
             DrawOption.AddQ(Q);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -105,6 +105,11 @@
             if (Me.HasBuff("VarusQLaunch") || Me.HasBuff("VarusQ"))
             {
                 Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+            }
+
+            if (Me.IsWindingUp)
+            {
+                return;
             }
 
             if (MiscOption.GetKey("R", "SemiR").Active)
@@ -130,6 +135,8 @@
 
         private static void SemiRLogic()
         {
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+
             if (R.IsReady())
             {
                 if (Q.IsCharging)
@@ -173,7 +180,7 @@
 
                             if (qPred.Hitchance >= HitChance.High)
                             {
-                                Q.Cast(qPred.CastPosition);
+                                Q.ShootChargedSpell(qPred.CastPosition);
                             }
                         }
                         else
@@ -189,7 +196,7 @@
 
                                     if (qPred.Hitchance >= HitChance.High)
                                     {
-                                        Q.Cast(qPred.CastPosition);
+                                        Q.ShootChargedSpell(qPred.CastPosition);
                                     }
                                 }
                             }
@@ -199,7 +206,7 @@
                     {
                         if (target.IsValidTarget(Q.ChargedMinRange))
                         {
-                            Q.Cast(target);
+                            Q.ShootChargedSpell(target.Position);
                         }
                         else
                         {
@@ -266,7 +273,7 @@
                     {
                         if (ComboOption.GetBool("ComboQFast").Enabled && target.IsValidTarget(800))
                         {
-                            Q.Cast(target);
+                            Q.ShootChargedSpell(target.Position);
                         }
                         else if (target.IsValidTarget(Q.ChargedMaxRange))
                         {
@@ -274,7 +281,7 @@
 
                             if (qPred.Hitchance >= HitChance.High)
                             {
-                                Q.Cast(qPred.CastPosition);
+                                Q.ShootChargedSpell(qPred.CastPosition);
                             }
                         }
                     }
@@ -295,17 +302,17 @@
                         {
                             if (Q.IsCharging)
                             {
-                                if (ComboOption.GetBool("ComboQFast").Enabled && target.IsValidTarget(800))
+                                if (ComboOption.GetBool("ComboQFast").Enabled && t.IsValidTarget(800))
                                 {
-                                    Q.Cast(target);
+                                    Q.ShootChargedSpell(t.Position);
                                 }
                                 else if (t.IsValidTarget(Q.ChargedMaxRange))
                                 {
-                                    var qPred = Q.GetPrediction(target);
+                                    var qPred = Q.GetPrediction(t);
 
                                     if (qPred.Hitchance >= HitChance.High)
                                     {
-                                        Q.Cast(qPred.CastPosition);
+                                        Q.ShootChargedSpell(qPred.CastPosition);
                                     }
                                 }
                             }
@@ -372,7 +379,7 @@
                             {
                                 if (target.IsValidTarget(800))
                                 {
-                                    Q.Cast(target);
+                                    Q.ShootChargedSpell(target.Position);
                                 }
                                 else
                                 {
@@ -380,7 +387,7 @@
 
                                     if (qPred.Hitchance >= HitChance.High)
                                     {
-                                        Q.Cast(qPred.CastPosition);
+                                        Q.ShootChargedSpell(qPred.CastPosition);
                                     }
                                 }
                             }
@@ -394,15 +401,15 @@
                                 {
                                     if (t.IsValidTarget(800))
                                     {
-                                        Q.Cast(target);
+                                        Q.ShootChargedSpell(t.Position);
                                     }
                                     else if (t.IsValidTarget(Q.ChargedMinRange))
                                     {
-                                        var qPred = Q.GetPrediction(target);
+                                        var qPred = Q.GetPrediction(t);
 
                                         if (qPred.Hitchance >= HitChance.High)
                                         {
-                                            Q.Cast(qPred.CastPosition);
+                                            Q.ShootChargedSpell(qPred.CastPosition);
                                         }
                                     }
                                 }
@@ -464,7 +471,7 @@
                             {
                                 if (qFarm.Position.DistanceToPlayer() <= Q.ChargedMaxRange)
                                 {
-                                    Q.Cast(qFarm.Position);
+                                    Q.ShootChargedSpell(qFarm.Position);
                                 }
                             }
                             else
@@ -504,7 +511,7 @@
                 var mobs =
                     GameObjects.Jungle.Where(x => x.IsValidTarget(1200) && x.GetJungleType() != JungleType.Unknown)
                         .Where(x => x.GetJungleType() != JungleType.Small)
-                        .ToArray();
+                        .ToList();
 
                 if (mobs.Any())
                 {
@@ -518,7 +525,7 @@
                             {
                                 if (mob.IsValidTarget(Q.Range))
                                 {
-                                    Q.Cast(mob.PreviousPosition);
+                                    Q.ShootChargedSpell(mob.PreviousPosition);
                                 }
                             }
                             else
@@ -579,6 +586,11 @@
                 if (Args.Slot == SpellSlot.Q)
                 {
                     lastQTime = Variables.GameTimeTickCount;
+
+                    if (ComboOption.UseW && W.IsReady() && Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+                    {
+                        W.Cast();
+                    }
                 }
 
                 if (Args.Slot == SpellSlot.E)
@@ -594,6 +606,11 @@
             {
                 if (Args.Slot == SpellSlot.Q)
                 {
+                    if (ComboOption.UseW && W.IsReady() && Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+                    {
+                        W.Cast();
+                    }
+
                     Args.Process = Variables.GameTimeTickCount - lastETime >= 750 + Game.Ping;
                 }
 

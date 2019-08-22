@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class TwistedFate : MyLogic
+    public class TwistedFate : MyLogic
     {
         public TwistedFate()
         {
@@ -85,7 +85,6 @@
             DrawOption.AddMenu();
             DrawOption.AddQ(Q);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, true, false, true);
 
             Game.OnUpdate += OnUpdate;
@@ -112,6 +111,11 @@
                 {
                     Orbwalker.ForceTarget = null;
                 }
+            }
+
+            if (Me.IsWindingUp)
+            {
+                return;
             }
 
             Auto();
@@ -394,13 +398,13 @@
 
                 if (JungleClearOption.UseW && W.IsReady())
                 {
-                    var Mob = GameObjects.Jungle.Where(x => x.IsValidTarget(Me.AttackRange + Me.BoundingRadius + 80) && x.GetJungleType() != JungleType.Unknown).ToArray();
+                    var Mob = GameObjects.Jungle.Where(x => x.IsValidTarget(Me.AttackRange + Me.BoundingRadius + 80) && x.GetJungleType() != JungleType.Unknown).ToList();
 
-                    if (Mob.Length > 0)
+                    if (Mob.Count > 0)
                     {
                         if (Me.Mana >= W.Mana * 2 + Q.Mana * 2)
                         {
-                            HumanizerCardSelect.StartSelecting(Mob.Length >= 2
+                            HumanizerCardSelect.StartSelecting(Mob.Count >= 2
                                 ? HumanizerCards.Red
                                 : HumanizerCards.Blue);
                         }
@@ -490,7 +494,7 @@
         }
     }
 
-    internal enum HumanizerSelectStatus
+    public enum HumanizerSelectStatus
     {
         Ready = 0,
         Selecting = 1,
@@ -498,7 +502,7 @@
         Cooldown = 3
     }
 
-    internal enum HumanizerCards
+    public enum HumanizerCards
     {
         Red = 0,
         Yellow = 1,
@@ -506,20 +510,20 @@
         None = 3
     }
 
-    internal static class HumanizerCardSelect
+    public static class HumanizerCardSelect
     {
-        internal static HumanizerCards Select;
-        internal static int LastWSent;
-        internal static Random random = new Random(Variables.GameTimeTickCount);
+        public static HumanizerCards Select;
+        public static int LastWSent;
+        public static Random random = new Random(Variables.GameTimeTickCount);
 
-        internal static HumanizerSelectStatus Status { get; set; }
+        public static HumanizerSelectStatus Status { get; set; }
 
         static HumanizerCardSelect()
         {
             Game.OnUpdate += OnUpdate;
         }
 
-        internal static void StartSelecting(HumanizerCards card)
+        public static void StartSelecting(HumanizerCards card)
         {
             if (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name == "PickACard" && Status == HumanizerSelectStatus.Ready)
             {
@@ -533,7 +537,7 @@
             }
         }
 
-        internal static bool IsSelect => ObjectManager.Player.HasBuff("GoldCardPreAttack") ||
+        public static bool IsSelect => ObjectManager.Player.HasBuff("GoldCardPreAttack") ||
             ObjectManager.Player.HasBuff("BlueCardPreAttack") ||
             ObjectManager.Player.HasBuff("RedCardPreAttack");
 

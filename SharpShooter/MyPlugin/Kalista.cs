@@ -16,7 +16,7 @@
 
     #endregion
 
-    internal class Kalista : MyLogic
+    public class Kalista : MyLogic
     {
         private static int lastWTime, lastETime;
 
@@ -83,7 +83,6 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(false, false, true, false, false);
 
             Game.OnUpdate += OnUpdate;
@@ -102,6 +101,11 @@
             }
 
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -377,10 +381,10 @@
                 if (JungleClearOption.UseE && E.IsReady() && Variables.GameTimeTickCount - lastETime > 500 + Game.Ping)
                 {
                     var KSCount =
-                        GameObjects.EnemyMinions.Where(
+                        GameObjects.Jungle.Where(
                                 x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown)
                             .Where(x => x.Buffs.Any(a => a.Name.ToLower().Contains("kalistaexpungemarker")))
-                            .Count(x => x.Health < E.GetKalistaRealDamage(x));
+                            .Count(x => x.Health < E.GetKalistaRealDamage(x) * 0.5f);
 
                     if (KSCount > 0)
                     {
@@ -392,7 +396,7 @@
                 {
                     var qMob =
                         GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown)
-                            .OrderBy(x => x.MaxHealth)
+                            .OrderByDescending(x => x.MaxHealth)
                             .FirstOrDefault();
 
                     if (qMob != null && qMob.IsValidTarget(Q.Range))
@@ -409,7 +413,8 @@
             {
                 if (GameObjects.EnemyMinions.Any(
                         x =>
-                            x.IsValidTarget(E.Range) &&
+                            x.IsValidTarget(E.Range) && 
+                            x.IsMinion() &&
                             x.Buffs.Any(
                                 a =>
                                     a.Name.ToLower().Contains("kalistaexpungemarker") &&

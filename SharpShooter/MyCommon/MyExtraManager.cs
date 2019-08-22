@@ -13,7 +13,7 @@
 
     #endregion
 
-    internal static class MyExtraManager
+    public static class MyExtraManager
     {
         public static double GetComboDamage(this AIBaseClient target, bool q, bool w, bool e, bool r, bool attack)
         {
@@ -191,13 +191,13 @@
             return SpellSlot.Unknown;
         }
 
-        internal static bool IsGrass(this Vector3 Position)
+        public static bool IsGrass(this Vector3 Position)
         {
             var CF = NavMesh.GetCollisionFlags(Position);
             return CF.HasFlag(CollisionFlags.Grass);
         }
 
-        internal static bool HaveShiledBuff(this AIBaseClient target)
+        public static bool HaveShiledBuff(this AIBaseClient target)
         {
             if (target == null || target.IsDead || target.Health <= 0 || !target.IsValidTarget())
             {
@@ -243,7 +243,7 @@
             return points.Count(point => spell.WillHit(point, endPosition));
         }
 
-        internal static bool CanMoveMent(this AIBaseClient target)
+        public static bool CanMoveMent(this AIBaseClient target)
         {
             return !(target.MoveSpeed < 50) && !target.HasBuffOfType(BuffType.Stun) &&
                    !target.HasBuffOfType(BuffType.Fear) && !target.HasBuffOfType(BuffType.Snare) &&
@@ -254,17 +254,17 @@
                    !target.HasBuff("zhonyasringshield") && !target.HasBuff("bardrstasis");
         }
 
-        internal static SpellDataInstClient GetBasicSpell(this Spell spell)
+        public static SpellDataInstClient GetBasicSpell(this Spell spell)
         {
             return ObjectManager.Player.Spellbook.GetSpell(spell.Slot);
         }
 
-        internal static SpellData GetSpellData(this Spell spell)
+        public static SpellData GetSpellData(this Spell spell)
         {
             return ObjectManager.Player.Spellbook.GetSpell(spell.Slot).SData;
         }
 
-        internal static bool IsUnKillable(this AIBaseClient target)
+        public static bool IsUnKillable(this AIBaseClient target)
         {
             if (target == null || target.IsDead || target.Health <= 0)
             {
@@ -316,7 +316,7 @@
             return target.HasBuff("FioraW");
         }
 
-        internal static double GetRealDamage(double Damage, AIBaseClient target, bool havetoler = false, float tolerDMG = 0)
+        public static double GetRealDamage(double Damage, AIBaseClient target, bool havetoler = false, float tolerDMG = 0)
         {
             if (target != null && !target.IsDead && target.Buffs.Any(a => a.Name.ToLower().Contains("kalistaexpungemarker")))
             {
@@ -390,7 +390,7 @@
             return 0d;
         }
 
-        internal static double GetKalistaRealDamage(this Spell spell, AIBaseClient target, bool havetoler = false, float tolerDMG = 0, bool getrealDMG = false)
+        public static double GetKalistaRealDamage(this Spell spell, AIBaseClient target, bool havetoler = false, float tolerDMG = 0, bool getrealDMG = false)
         {
             if (target != null && !target.IsDead && target.Buffs.Any(a => a.Name.ToLower().Contains("kalistaexpungemarker")))
             {
@@ -468,7 +468,7 @@
             return 0d;
         }
 
-        internal static IEnumerable<Vector3> GetCirclePoints(float range)
+        public static IEnumerable<Vector3> GetCirclePoints(float range)
         {
             var points = new List<Vector3>();
 
@@ -486,7 +486,7 @@
             return points;
         }
 
-        internal static IEnumerable<Vector3> GetCirclePoints(Vector3 position, float range)
+        public static IEnumerable<Vector3> GetCirclePoints(Vector3 position, float range)
         {
             var points = new List<Vector3>();
 
@@ -504,7 +504,7 @@
             return points;
         }
 
-        internal static IEnumerable<Vector3> GetCirclePoints(Vector2 position, float range)
+        public static IEnumerable<Vector3> GetCirclePoints(Vector2 position, float range)
         {
             var points = new List<Vector3>();
 

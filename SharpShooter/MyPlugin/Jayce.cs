@@ -25,7 +25,7 @@
     #endregion
 
     // EMM TODO
-    internal class Jayce : MyLogic
+    public class Jayce : MyLogic
     {
         private static float qCd, qCdEnd;
         private static float q1Cd, q1CdEnd;
@@ -128,7 +128,6 @@
             DrawOption.AddRange(Q, "Hammer Q");
             DrawOption.AddRange(W, "Hammer W");
             DrawOption.AddRange(E, "Hammer E");
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, true, false, false);
             DrawOption.AddBool("DrawCoolDown", "Draw Spell CoolDown");
 
@@ -148,6 +147,11 @@
                 return;
             }
 
+            if (Me.IsWindingUp)
+            {
+                return;
+            }
+
             if (MiscOption.GetBool("QE", "SemiQE").Enabled)
             {
                 SemiQELogic();
@@ -160,19 +164,17 @@
 
             KillSteal();
 
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+            switch (Orbwalker.ActiveMode)
             {
-                Combo();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Harass)
-            {
-                Harass();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear)
-            {
-                FarmHarass();
+                case OrbwalkerMode.Combo:
+                    Combo();
+                    break;
+                case OrbwalkerMode.Harass:
+                    Harass();
+                    break;
+                case OrbwalkerMode.LaneClear:
+                    FarmHarass();
+                    break;
             }
         }
 
@@ -557,7 +559,7 @@
             return false;
         }
 
-        internal static double GetQDamage(AIBaseClient target, bool getmeleeDMG = false, bool getcannonDMG = false)
+        public static double GetQDamage(AIBaseClient target, bool getmeleeDMG = false, bool getcannonDMG = false)
         {
             var level = Q.Level - 1;
 
@@ -577,7 +579,7 @@
             return Me.CalculateDamage(target, DamageType.Physical, isMelee ? meleeDMG : cannonDMG);
         }
 
-        internal static double GetWDamage(AIBaseClient target, bool ignoreCheck = false)
+        public static double GetWDamage(AIBaseClient target, bool ignoreCheck = false)
         {
             if (!isMelee || !ignoreCheck)
             {
@@ -591,7 +593,7 @@
             return Me.CalculateDamage(target, DamageType.Magical, meleeDMG);
         }
 
-        internal static double GetEDamage(AIBaseClient target, bool ignoreCheck = false)
+        public static double GetEDamage(AIBaseClient target, bool ignoreCheck = false)
         {
             if (!isMelee || !ignoreCheck)
             {

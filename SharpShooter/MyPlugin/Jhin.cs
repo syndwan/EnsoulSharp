@@ -22,7 +22,7 @@
 
     #endregion
 
-    internal class Jhin : MyLogic
+    public class Jhin : MyLogic
     {
         private static AIHeroClient rShotTarget { get; set; }
         private static int lastETime { get; set; }
@@ -106,7 +106,6 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, true, false, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -133,6 +132,11 @@
 
             Orbwalker.AttackState = true;
             Orbwalker.MovementState = true;
+
+            if (Me.IsWindingUp)
+            {
+                return;
+            }
 
             KillSteal();
             Auto();
@@ -629,8 +633,8 @@
             {
                 var mobs =
                     GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.GetJungleType() != JungleType.Unknown)
-                        .OrderBy(x => x.MaxHealth)
-                        .ToArray();
+                        .OrderByDescending(x => x.MaxHealth)
+                        .ToList();
 
                 if (mobs.Any())
                 {

@@ -19,7 +19,7 @@
 
     #endregion
 
-    internal class Corki : MyLogic
+    public class Corki : MyLogic
     {
         private static float rRange => Me.HasBuff("CorkiMissileBarrageCounterBig") ? 1500f : 1300f;
 
@@ -38,7 +38,7 @@
             E = new Spell(SpellSlot.E, 600f);
 
             R = new Spell(SpellSlot.R, rRange);
-            R.SetSkillshot(0.20f, 50f, 2000f, true, true, SkillshotType.Line);
+            R.SetSkillshot(0.20f, 50f, 2000f, true, false, SkillshotType.Line);
 
             ComboOption.AddMenu();
             ComboOption.AddQ();
@@ -86,7 +86,6 @@
             DrawOption.AddW(W);
             DrawOption.AddE(E);
             DrawOption.AddR(R);
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, false, true, true, true);
 
             Game.OnUpdate += OnUpdate;
@@ -96,6 +95,11 @@
         private static void OnUpdate(EventArgs args)
         {
             if (Me.IsDead || Me.IsRecalling())
+            {
+                return;
+            }
+
+            if (Me.IsWindingUp)
             {
                 return;
             }
@@ -128,6 +132,8 @@
 
         private static void SemiRLogic()
         {
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+
             if (R.IsReady() && R.Ammo > 0)
             {
                 var target = MyTargetSelector.GetTarget(R.Range);
@@ -138,7 +144,7 @@
 
                     if (rPred.Hitchance >= HitChance.High)
                     {
-                        R.Cast(rPred.UnitPosition);
+                        R.Cast(rPred.CastPosition);
                     }
                 }
             }
@@ -225,7 +231,7 @@
 
                 if (ComboOption.UseE && E.IsReady() && target.IsValidTarget(E.Range))
                 {
-                    E.Cast();
+                    E.Cast(Me.PreviousPosition);
                 }
             }
         }
@@ -262,7 +268,7 @@
 
                     if (HarassOption.UseE && E.IsReady() && target.InAutoAttackRange())
                     {
-                        E.Cast();
+                        E.Cast(Me.PreviousPosition);
                     }
                 }
             }
@@ -302,11 +308,11 @@
 
                 if (LaneClearOption.UseE && E.IsReady())
                 {
-                    var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(E.Range) && x.IsMinion()).ToArray();
+                    var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(E.Range) && x.IsMinion()).ToList();
 
-                    if (minions.Any() && minions.Length >= LaneClearOption.GetSlider("LaneClearECount").Value)
+                    if (minions.Any() && minions.Count >= LaneClearOption.GetSlider("LaneClearECount").Value)
                     {
-                        E.Cast();
+                        E.Cast(Me.PreviousPosition);
                     }
                 }
 
@@ -334,7 +340,8 @@
             {
                 var mobs =
                     GameObjects.Jungle.Where(x => x.IsValidTarget(R.Range) && x.GetJungleType() != JungleType.Unknown && !x.InAutoAttackRange())
-                        .ToArray();
+                        .OrderByDescending(x => x.MaxHealth)
+                        .ToList();
 
                 if (mobs.Any())
                 {
@@ -344,13 +351,13 @@
                         R.Ammo >= JungleClearOption.GetSlider("JungleClearRLimit").Value &&
                         mob.IsValidTarget(R.Range) && !mob.InAutoAttackRange())
                     {
-                        R.Cast(mob);
+                        R.CastIfHitchanceEquals(mob, HitChance.Medium);
                     }
 
                     if (JungleClearOption.UseQ && Q.IsReady() &&
                         mob.IsValidTarget(Q.Range) && !mob.InAutoAttackRange())
                     {
-                        Q.Cast(mob);
+                        Q.CastIfHitchanceEquals(mob, HitChance.Medium);
                     }
                 }
             }
@@ -400,7 +407,7 @@
                                 }
                                 else if (ComboOption.UseE && E.IsReady() && target.InAutoAttackRange())
                                 {
-                                    E.Cast();
+                                    E.Cast(Me.PreviousPosition);
                                 }
                             }
                         }
@@ -421,15 +428,15 @@
                                             R.Ammo >=
                                             JungleClearOption.GetSlider("JungleClearRLimit").Value)
                                         {
-                                            R.Cast(mob);
+                                            R.CastIfHitchanceEquals(mob,  HitChance.Medium);
                                         }
                                         else if (JungleClearOption.UseQ && Q.IsReady() && mob.IsValidTarget(Q.Range))
                                         {
-                                            Q.Cast(mob);
+                                            Q.CastIfHitchanceEquals(mob, HitChance.Medium);
                                         }
                                         else if (JungleClearOption.UseE && E.IsReady() && mob.InAutoAttackRange())
                                         {
-                                            E.Cast();
+                                            E.Cast(Me.PreviousPosition);
                                         }
                                     }
                                 }

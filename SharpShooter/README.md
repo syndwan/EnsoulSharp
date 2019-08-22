@@ -4,7 +4,16 @@ This is basic on my old Aimkek Project
 
 i dont have test, maybe it have some bugs
 
+本人QQ群: 598027398
+
 --------------------------------------------------
+
+Support List
+--------------------------------------------------
+Ashe, Caitlyn, Corki, Draven, Ezreal, Graves, Jhin, Jinx, Kalista, KogMaw, MissFortune,
+
+Lucian, Quinn, Sivir, Tristana, TwistedFate, Twitch, Urgot, Varus, Vayne, Xayah
+
 
 Ashe
 --------------------------------------------------

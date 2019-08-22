@@ -86,12 +86,13 @@
     <Compile Include="MyPlugin\Vayne.cs" />
     <Compile Include="MyPlugin\Xayah.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="topic.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TODO.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -24,7 +24,7 @@
 
     #endregion
 
-    internal class Draven : MyLogic
+    public class Draven : MyLogic
     {
         private static Dictionary<GameObject, int> AxeList { get; } = new Dictionary<GameObject, int>();
 
@@ -111,7 +111,6 @@
             DrawOption.AddR(R);
             DrawOption.AddBool("AxeRange", "Draw Catch Axe Range");
             DrawOption.AddBool("AxePosition", "Draw Axe Position");
-            DrawOption.AddFarm();
             DrawOption.AddDamageIndicatorToHero(true, false, true, true, true);
 
             AxeOption.GetKey("CancelKey1").ValueChanged += OnCancelValueChange;
@@ -152,25 +151,28 @@
                 return;
             }
 
+            if (Me.IsWindingUp)
+            {
+                return;
+            }
+
             R.Range = MiscOption.GetSlider("R", "GlobalRMax").Value;
 
             CatchAxeEvent();
             KillStealEvent();
             AutoUseEvent();
 
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+            switch (Orbwalker.ActiveMode)
             {
-                ComboEvent();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Harass)
-            {
-                HarassEvent();
-            }
-
-            if (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear)
-            {
-                ClearEvent();
+                case OrbwalkerMode.Combo:
+                    ComboEvent();
+                    break;
+                case OrbwalkerMode.Harass:
+                    HarassEvent();
+                    break;
+                case OrbwalkerMode.LaneClear:
+                    ClearEvent();
+                    break;
             }
         }
 
@@ -178,14 +180,14 @@
         {
             if (AxeList.Count == 0)
             {
-                OrbwalkerPoint = Game.CursorPosRaw;
+                Orbwalker.SetOrbwalkerPosition(Vector3.Zero);
                 return;
             }
 
             if (AxeOption.GetList("CatchMode").Index == 2 ||
                 AxeOption.GetList("CatchMode").Index == 1 && Orbwalker.ActiveMode != OrbwalkerMode.Combo)
             {
-                OrbwalkerPoint = Game.CursorPosRaw;
+                Orbwalker.SetOrbwalkerPosition(Vector3.Zero);
                 return;
             }
 
@@ -224,7 +226,7 @@
                         target.DistanceToPlayer() > target.BoundingRadius + Me.BoundingRadius + 200 &&
                         target.Health < Me.GetAutoAttackDamage(target) * 2.5 - 80)
                     {
-                        OrbwalkerPoint = Game.CursorPosRaw;
+                        Orbwalker.SetOrbwalkerPosition(Vector3.Zero);
                         return;
                     }
                 }
@@ -241,7 +243,7 @@
                     {
                         if (Orbwalker.ActiveMode != OrbwalkerMode.None)
                         {
-                            OrbwalkerPoint = bestAxe.Key.Position;
+                            Orbwalker.SetOrbwalkerPosition(bestAxe.Key.Position);
                         }
                         else
                         {
@@ -252,7 +254,7 @@
                     {
                         if (Orbwalker.ActiveMode != OrbwalkerMode.None)
                         {
-                            OrbwalkerPoint = Game.CursorPosRaw;
+                            Orbwalker.SetOrbwalkerPosition(Vector3.Zero);
                         }
                     }
                 }
@@ -260,7 +262,7 @@
                 {
                     if (Orbwalker.ActiveMode != OrbwalkerMode.None)
                     {
-                        OrbwalkerPoint = Game.CursorPosRaw;
+                        Orbwalker.SetOrbwalkerPosition(Vector3.Zero);
                     }
                 }
             }
@@ -268,7 +270,7 @@
             {
                 if (Orbwalker.ActiveMode != OrbwalkerMode.None)
                 {
-                    OrbwalkerPoint = Game.CursorPosRaw;
+                    Orbwalker.SetOrbwalkerPosition(Vector3.Zero);
                 }
             }
         }
@@ -323,17 +325,21 @@
 
         private static void AutoUseEvent()
         {
-            if (MiscOption.GetKey("R", "SemiRKey").Active && Me.Spellbook.GetSpell(SpellSlot.R).Level > 0 && R.IsReady())
+            if (MiscOption.GetKey("R", "SemiRKey").Active)
             {
-                var target = MyTargetSelector.GetTarget(R.Range);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
 
-                if (target.IsValidTarget(R.Range) && !target.IsValidTarget(MiscOption.GetSlider("R", "GlobalRMin").Value))
+                if (Me.Spellbook.GetSpell(SpellSlot.R).Level > 0 && R.IsReady())
                 {
-                    var rPred = R.GetPrediction(target);
-
-                    if (rPred.Hitchance >= HitChance.High)
+                    var target = MyTargetSelector.GetTarget(R.Range);
+                    if (target.IsValidTarget(R.Range) && !target.IsValidTarget(MiscOption.GetSlider("R", "GlobalRMin").Value))
                     {
-                        R.Cast(rPred.CastPosition);
+                        var rPred = R.GetPrediction(target);
+
+                        if (rPred.Hitchance >= HitChance.High)
+                        {
+                            R.Cast(rPred.CastPosition);
+                        }
                     }
                 }
             }
@@ -457,7 +463,7 @@
                 {
                     var ePred = E.GetPrediction(target);
 
-                    if (ePred.Hitchance >= HitChance.VeryHigh ||
+                    if (ePred.Hitchance >= HitChance.High ||
                         ePred.Hitchance >= HitChance.Medium && ePred.AoeTargetsHitCount > 1)
                     {
                         E.Cast(ePred.CastPosition);
@@ -486,9 +492,9 @@
             {
                 if (LaneClearOption.UseQ && Q.IsReady() && AxeCount < 2 && Orbwalker.CanAttack())
                 {
-                    var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(600) && x.IsMinion()).ToArray();
+                    var minions = GameObjects.EnemyMinions.Where(x => x.IsValidTarget(600) && x.IsMinion()).ToList();
 
-                    if (minions.Any() && minions.Length >= 2)
+                    if (minions.Any() && minions.Count >= 2)
                     {
                         Q.Cast();
                     }
@@ -515,7 +521,9 @@
         {
             if (JungleClearOption.HasEnouguMana())
             {
-                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown).ToArray();
+                var mobs = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.GetJungleType() != JungleType.Unknown)
+                                             .OrderByDescending(x => x.MaxHealth)
+                                             .ToList();
 
                 if (mobs.Any())
                 {
@@ -523,7 +531,7 @@
 
                     if (JungleClearOption.UseE && E.IsReady() && mob != null && mob.IsValidTarget(E.Range))
                     {
-                        E.Cast(mob);
+                        E.CastIfHitchanceEquals(mob, HitChance.Medium);
                     }
 
                     if (JungleClearOption.UseW && W.IsReady() && !Me.HasBuff("dravenfurybuff") && AxeCount > 0)
@@ -545,12 +553,12 @@
 
                     if (JungleClearOption.UseQ && Q.IsReady() && AxeCount < 2 && Orbwalker.CanAttack())
                     {
-                        if (mobs.Length >= 2)
+                        if (mobs.Count >= 2)
                         {
                             Q.Cast();
                         }
 
-                        if (mobs.Length == 1 && mob != null && mob.InAutoAttackRange() && mob.Health > Me.GetAutoAttackDamage(mob) * 5)
+                        if (mobs.Count == 1 && mob != null && mob.InAutoAttackRange() && mob.Health > Me.GetAutoAttackDamage(mob) * 5)
                         {
                             Q.Cast();
                         }
@@ -583,7 +591,7 @@
 
         private static void OnCreate(GameObject sender)
         {
-            if (sender.Name.Contains("Draven_Base_Q_reticle_self"))
+            if (sender != null && sender.Name.Contains("Draven_") && sender.Name.Contains("_Q_reticle_self"))
             {
                 AxeList.Add(sender, Variables.GameTimeTickCount + 1800);
             }
@@ -591,9 +599,12 @@
 
         private static void OnDestroy(GameObject sender)
         {
-            if (AxeList.Any(o => o.Key.NetworkId == sender.NetworkId))
+            if (sender != null && sender.Name.Contains("Draven_") && sender.Name.Contains("_Q_reticle_self"))
             {
-                AxeList.Remove(sender);
+                if (AxeList.Any(o => o.Key.NetworkId == sender.NetworkId))
+                {
+                    AxeList.Remove(sender);
+                }
             }
         }
 
@@ -624,11 +635,7 @@
 
         private static void OnAction(object sender, OrbwalkerActionArgs Args)
         {
-            if (Args.Type == OrbwalkerType.Movement)
-            {
-                Args.Position = OrbwalkerPoint;
-            }
-            else if (Args.Type == OrbwalkerType.BeforeAttack)
+            if (Args.Type == OrbwalkerType.BeforeAttack)
             {
                 if (Args.Target == null || Args.Target.IsDead || !Args.Target.IsValidTarget() || Args.Target.Health <= 0 || !Q.IsReady())
                 {
