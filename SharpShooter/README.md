@@ -7,6 +7,7 @@ i dont have test, maybe it have some bugs
 --------------------------------------------------
 
 Ashe
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -21,9 +22,10 @@ KillSteal Logic
 Semi R Logic
 
 Spell Range Circle
---------------------------------------------------
+
 
 Caitlyn
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -43,8 +45,8 @@ Semi R/EQ Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Corki
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -62,8 +64,8 @@ Semi R Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Draven
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -87,8 +89,8 @@ Draw Axe Position and Draw Axe Catch Range
 
 Spell Range Circle
 
---------------------------------------------------
 Ezreal
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -106,8 +108,8 @@ R Custom and Semi R Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Graves
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -125,8 +127,8 @@ KillSteal Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Kalista
+--------------------------------------------------
 
 Basic Logic (QER)
 
@@ -147,9 +149,9 @@ Auto R Save Ally Logic
 Forcus Attack Passive Logic
 
 Spell Range Circle
---------------------------------------------------
 
 KogMaw
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -163,8 +165,8 @@ KillSteal Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Lucian
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -183,9 +185,9 @@ KillSteal Logic
 Semi R Logic
 
 Spell Range Circle
---------------------------------------------------
 
 MissFortune
+--------------------------------------------------
 
 Basic Logic (QWE)
 
@@ -201,8 +203,8 @@ Semi R Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Jhin
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -224,8 +226,8 @@ R Custom and Semi R Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Jinx
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -245,8 +247,8 @@ R Custom and Semi R Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Quinn
+--------------------------------------------------
 
 Basic Logic (QWE)
 
@@ -262,8 +264,8 @@ Auto R Logic (In Fountain)
 
 Spell Range Circle
 
---------------------------------------------------
 Sivir
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -281,8 +283,8 @@ Special E Block Spell Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Twitch
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -300,8 +302,8 @@ KillSteal Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Tristana
+--------------------------------------------------
 
 Basic Logic (QER)
 
@@ -323,8 +325,8 @@ Forcus Attack Passive Logic
 
 Spell Range Circle
 
---------------------------------------------------
 TwistedFate
+--------------------------------------------------
 
 Basic Logic (QW)
 
@@ -350,8 +352,8 @@ Auto Gold Card In Ult
 
 Spell Range Circle
 
---------------------------------------------------
 Varus
+--------------------------------------------------
 
 Basic Logic (QWER)
 
@@ -371,8 +373,8 @@ Semi R Logic
 
 Spell Range Circle
 
---------------------------------------------------
 Vayne
+--------------------------------------------------
 
 Basic Logic(QER)
 
@@ -400,8 +402,8 @@ Stealth Logic (High Custom)
 
 Spell Range Circle
 
---------------------------------------------------
 Xayah
+--------------------------------------------------
 
 Basic Logic(QWE)
 
