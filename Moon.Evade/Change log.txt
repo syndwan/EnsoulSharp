@@ -1,2 +1,5 @@
+v1.0.0.1
+Now Evade will detect more spell and then do evade (old version only delect one spell to evade)
+
 v1.0.0.0
 BETA Released
