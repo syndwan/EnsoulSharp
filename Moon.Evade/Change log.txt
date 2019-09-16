@@ -1,3 +1,6 @@
+v1.0.0.2
+Add Mordekaiser into evade (Q/E)
+
 v1.0.0.1
 Now Evade will detect more spell and then do evade (old version only delect one spell to evade)
 
