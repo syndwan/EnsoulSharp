@@ -1,3 +1,6 @@
+v1.0.0.5
+Fix Hecarim R Evade issue 
+
 v1.0.0.4
 1> Fix Veigar E Spell Draw error issue
 2> Fix Irelia E Spell Draw error issue (for now it wont be draw on error pos, make evade fail)
