@@ -1,3 +1,6 @@
+v1.0.0.3
+Fix Diana Q
+
 v1.0.0.2
 Add Mordekaiser into evade (Q/E)
 
