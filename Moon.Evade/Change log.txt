@@ -1,3 +1,10 @@
+v1.0.0.4
+1> Fix Veigar E Spell Draw error issue
+2> Fix Irelia E Spell Draw error issue (for now it wont be draw on error pos, make evade fail)
+3> Fix 'Only Dodge Danger' option not work issue
+4> For now evade choice out of enemy turret position first(and far away enemy), if no other point can be safe evade, it will choice evade to turret or enemy position
+5> Fix an issue when player already in Skillshot range but evade not moving and broken movement order
+
 v1.0.0.3
 Fix Diana Q
 
