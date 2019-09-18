@@ -1,3 +1,6 @@
+v1.0.0.6
+Disable debug message on Console
+
 v1.0.0.5
 Fix Hecarim R Evade issue 
 
