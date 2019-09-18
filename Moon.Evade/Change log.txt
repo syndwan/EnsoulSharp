@@ -1,3 +1,8 @@
+v1.0.0.7
+Improve Viktor E Evade
+Fix Nautilus Q too short issue
+Fix some spell wont be draw current range issue (even they have menuoption)
+
 v1.0.0.6
 Disable debug message on Console
 
