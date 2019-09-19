@@ -1,3 +1,12 @@
+v1.0.0.9
+1> Fix Spell Evade not work issue(for now it will be use spell evade)
+2> Fix it will only evade once issue
+3> Improve Darius Q, Veigar E Evade Logic
+4> Fix Aatrox Q2, Annie W, Darius E, Camille W, Cassiopeia R, Graves R, Kassadin E, MissFortune Q Evade Fail + Draw Error issue
+5> Add 'Evade Direction' MenuOption (in Misc Menu), default only choice closer player pos
+6> Add 'High Calculate Evade Position' MenuOption (in Misc Menu), if you feel high FPS drop or game crash(team fight), you can disable this menuoption (maybe work for crash user, i dont have crach issue)
+7> Add 'Disable Evade to Between Wall Pos' MenuOption, default off
+
 v1.0.0.8
 1> Suspend Common library  support
 2> for some spell it will have double detect (avoid sometimes it wont be detected)
