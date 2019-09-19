@@ -1,7 +1,11 @@
+v1.0.0.8
+1> Suspend Common library  support
+2> for some spell it will have double detect (avoid sometimes it wont be detected)
+
 v1.0.0.7
-Improve Viktor E Evade
-Fix Nautilus Q too short issue
-Fix some spell wont be draw current range issue (even they have menuoption)
+1> Improve Viktor E Evade
+2> Fix Nautilus Q too short issue
+3> Fix some spell wont be draw current range issue (even they have menuoption)
 
 v1.0.0.6
 Disable debug message on Console
