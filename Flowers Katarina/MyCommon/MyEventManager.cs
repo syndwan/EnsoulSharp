@@ -24,7 +24,7 @@
         {
             try
             {
-                Game.OnUpdate += Args => OnUpdate();
+                Game.OnTick += Args => OnUpdate();
                 GameObject.OnCreate += (sender, Args) => OnCreate(sender);
                 GameObject.OnDelete += (sender, Args) => OnDestroy(sender);
                 AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
@@ -61,7 +61,7 @@
 
                 if (isCastingUlt)
                 {
-                    Chat.Print("IS CASTING R");
+                    //Chat.Print("IS CASTING R");
                     Orbwalker.AttackState = false;
                     Orbwalker.MovementState = false;
 
