@@ -131,7 +131,7 @@
             DrawOption.AddDamageIndicatorToHero(true, true, true, false, false);
             DrawOption.AddBool("DrawCoolDown", "Draw Spell CoolDown");
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             Orbwalker.OnAction += OnAction;
             GameObject.OnCreate += (sender, args) => OnCreate(sender);
             //Gapcloser.OnGapcloser += OnGapcloser;

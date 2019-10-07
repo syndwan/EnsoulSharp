@@ -26,7 +26,7 @@
         {
             try
             {
-                Game.OnUpdate += Args => OnUpdate();
+                Game.OnTick += Args => OnUpdate();
                 AIBaseClient.OnBuffGain += OnBuffGain;
                 AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
                 AIBaseClient.OnPlayAnimation += OnPlayAnimation;

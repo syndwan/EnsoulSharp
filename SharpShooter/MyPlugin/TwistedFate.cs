@@ -87,7 +87,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, true, true, false, true);
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             //Gapcloser.OnGapcloser += OnGapcloser;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             Orbwalker.OnAction += OnAction;
@@ -520,7 +520,7 @@
 
         static HumanizerCardSelect()
         {
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
         }
 
         public static void StartSelecting(HumanizerCards card)

@@ -100,7 +100,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, true, false, true, true);
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             AIBaseClient.OnPlayAnimation += OnPlayAnimation;
             Spellbook.OnCastSpell += OnCastSpell;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;

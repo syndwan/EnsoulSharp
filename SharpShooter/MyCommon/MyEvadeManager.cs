@@ -54,7 +54,7 @@
                 heroMenu?.Add(new MenuBool("BlockSpell" + spell.SpellSlot, spell.CharacterName + " " + spell.SpellSlot));
             }
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             AIBaseClient.OnPlayAnimation += OnPlayAnimation;
             Dash.OnDash += OnDash;

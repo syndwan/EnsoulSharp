@@ -89,7 +89,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             //Gapcloser.OnGapcloser += OnGapcloser;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             Spellbook.OnCastSpell += OnCastSpell;

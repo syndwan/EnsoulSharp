@@ -88,7 +88,7 @@
 
             CPrediction.BoundingRadiusMultiplicator = 1.15f;
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             GameObject.OnCreate += (sender, args) => OnCreate(sender);
             GameObject.OnDelete += (sender, args) => OnDestroy(sender);
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;

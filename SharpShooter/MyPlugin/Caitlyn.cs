@@ -97,7 +97,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, false, true, true, true);
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             //Gapcloser.OnGapcloser += OnGapcloser;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
         }

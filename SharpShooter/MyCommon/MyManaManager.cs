@@ -56,7 +56,7 @@
                     }
                 };
 
-                Game.OnUpdate += delegate
+                Game.OnTick += delegate
                 {
                     SpellFarm = farmMenu["MyManaManager.SpellFarmMode"].GetValue<MenuList>().Index == 0 && FarmScrool ||
                                 farmMenu["MyManaManager.SpellFarmMode"].GetValue<MenuList>().Index == 1 &&

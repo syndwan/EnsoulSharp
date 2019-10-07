@@ -85,7 +85,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(false, false, true, false, false);
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             Orbwalker.OnAction += OnAction;
         }

@@ -115,7 +115,7 @@
 
             AxeOption.GetKey("CancelKey1").ValueChanged += OnCancelValueChange;
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             Game.OnWndProc += OnWndProc;
             GameObject.OnCreate += (sender, args) => OnCreate(sender);
             GameObject.OnDelete += (sender, args) => OnDestroy(sender);

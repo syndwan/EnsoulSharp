@@ -90,7 +90,7 @@
             DrawOption.AddE(E);
             DrawOption.AddDamageIndicatorToHero(false, true, true, false, true);
 
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             Orbwalker.OnAction += OnAction;
             //Gapcloser.OnGapcloser += OnGapcloser;
         }
