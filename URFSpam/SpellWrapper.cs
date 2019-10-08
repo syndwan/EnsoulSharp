@@ -10,112 +10,44 @@
 
     internal class SpellWrapper
     {
-        public static Spell QNormal;
-        public static Spell QCircle;
-        public static Spell QLinear;
-
-        public static Spell WNormal;
-        public static Spell WCircle;
-        public static Spell WLinear;
-
-        public static Spell ENormal;
-        public static Spell ECircle;
-        public static Spell ELinear;
-
-        public static Spell RNormal;
-        public static Spell RCircle;
-        public static Spell RLinear;
+        public static Spell Q;
+        public static Spell W;
+        public static Spell E;
+        public static Spell R;
 
         public static void Initializer()
         {
-            QNormal = new Spell(SpellSlot.Q);
-            QCircle = new Spell(SpellSlot.Q);
-            QLinear = new Spell(SpellSlot.Q);
-
-            WNormal = new Spell(SpellSlot.W);
-            WCircle = new Spell(SpellSlot.W);
-            WLinear = new Spell(SpellSlot.W);
-
-            ENormal = new Spell(SpellSlot.E);
-            ECircle = new Spell(SpellSlot.E);
-            ELinear = new Spell(SpellSlot.E);
-
-            RNormal = new Spell(SpellSlot.R);
-            RCircle = new Spell(SpellSlot.R);
-            RLinear = new Spell(SpellSlot.R);
-        }
-
-        public static void SetSkillshot()
-        {
-            //QQQ
-            QNormal.Range = MenuWrapper.Q.Range.Value;
-            QCircle.Range = MenuWrapper.Q.Range.Value;
-            QLinear.Range = MenuWrapper.Q.Range.Value;
-
-            QCircle.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
-            QLinear.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
-
-            QLinear.Collision = MenuWrapper.Q.Type.Index == 4;
-
-            QNormal.MinHitChance = (HitChance) (4 - MenuWrapper.Q.Hitchance.Index);
-            QCircle.MinHitChance = (HitChance)(4 - MenuWrapper.Q.Hitchance.Index);
-            QLinear.MinHitChance = (HitChance)(4 - MenuWrapper.Q.Hitchance.Index);
-
-            //WWW
-            WNormal.Range = MenuWrapper.W.Range.Value;
-            WCircle.Range = MenuWrapper.W.Range.Value;
-            WLinear.Range = MenuWrapper.W.Range.Value;
-
-            WCircle.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
-            WLinear.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
-
-            WLinear.Collision = MenuWrapper.W.Type.Index == 4;
-
-            WNormal.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
-            WCircle.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
-            WLinear.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
-
-            //EEE
-            ENormal.Range = MenuWrapper.E.Range.Value;
-            ECircle.Range = MenuWrapper.E.Range.Value;
-            ELinear.Range = MenuWrapper.E.Range.Value;
-
-            ECircle.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
-            ELinear.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
-
-            ELinear.Collision = MenuWrapper.E.Type.Index == 4;
-
-            ENormal.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
-            ECircle.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
-            ELinear.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
-
-            //RRR
-            RNormal.Range = MenuWrapper.R.Range.Value;
-            RCircle.Range = MenuWrapper.R.Range.Value;
-            RLinear.Range = MenuWrapper.R.Range.Value;
-
-            RCircle.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
-            RLinear.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
-
-            RLinear.Collision = MenuWrapper.R.Type.Index == 4;
-
-            RNormal.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
-            RCircle.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
-            RLinear.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
+            //Setup Spell
+            Q = new Spell(SpellSlot.Q);
+            W = new Spell(SpellSlot.W);
+            E = new Spell(SpellSlot.E);
+            R = new Spell(SpellSlot.R);
 
             //Set Range
+            Q.Range = MenuWrapper.Q.Range.Value;
+            W.Range = MenuWrapper.W.Range.Value;
+            E.Range = MenuWrapper.E.Range.Value;
+            R.Range = MenuWrapper.R.Range.Value;
+
+            //Set Hitchance
+            Q.MinHitChance = (HitChance)(4 - MenuWrapper.Q.Hitchance.Index);
+            W.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
+            E.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
+            R.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
+
+            //On Range Value Change
             MenuWrapper.Q.Range.ValueChanged += QRangeValueChanged;
             MenuWrapper.W.Range.ValueChanged += WRangeValueChanged;
             MenuWrapper.E.Range.ValueChanged += ERangeValueChanged;
             MenuWrapper.R.Range.ValueChanged += RRangeValueChanged;
-
-            //Set Hitchange
+            
+            //On Hitchange Value Change
             MenuWrapper.Q.Hitchance.ValueChanged += QHitchanceValueChanged;
             MenuWrapper.W.Hitchance.ValueChanged += WHitchanceValueChanged;
             MenuWrapper.E.Hitchance.ValueChanged += EHitchanceValueChanged;
             MenuWrapper.R.Hitchance.ValueChanged += RHitchanceValueChanged;
 
-            //Set Collision
+            //On SpellType Value Change
             MenuWrapper.Q.Type.ValueChanged += QCollisionValueChanged;
             MenuWrapper.W.Type.ValueChanged += WCollisionValueChanged;
             MenuWrapper.E.Type.ValueChanged += ECollisionValueChanged;
@@ -200,20 +132,20 @@
                 {
                     if (MenuWrapper.Q.Combo.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(QNormal.Range);
-                        if (target != null && target.IsValidTarget(QNormal.Range))
+                        var target = TargetSelector.GetTarget(Q.Range);
+                        if (target != null && target.IsValidTarget(Q.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                QNormal.Cast();
+                                Q.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                QCircle.CastIfHitchanceEquals(target, QCircle.MinHitChance);
+                                Q.CastIfHitchanceEquals(target, Q.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                QLinear.CastIfHitchanceEquals(target, QLinear.MinHitChance);
+                                Q.CastIfHitchanceEquals(target, Q.MinHitChance);
                             }
                         }
                     }
@@ -222,20 +154,20 @@
                 {
                     if (MenuWrapper.Q.Harass.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(QNormal.Range);
-                        if (target != null && target.IsValidTarget(QNormal.Range))
+                        var target = TargetSelector.GetTarget(Q.Range);
+                        if (target != null && target.IsValidTarget(Q.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                QNormal.Cast();
+                                Q.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                QCircle.CastIfHitchanceEquals(target, QCircle.MinHitChance);
+                                Q.CastIfHitchanceEquals(target, Q.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                QLinear.CastIfHitchanceEquals(target, QLinear.MinHitChance);
+                                Q.CastIfHitchanceEquals(target, Q.MinHitChance);
                             }
                         }
                     }
@@ -244,21 +176,21 @@
                 {
                     if (MenuWrapper.Q.JungleClear.Enabled)
                     {
-                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(QNormal.Range) && x.IsJungle())
+                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(Q.Range) && x.IsJungle())
                             .OrderByDescending(x => x.MaxHealth).FirstOrDefault();
-                        if (target != null && target.IsValidTarget(QNormal.Range))
+                        if (target != null && target.IsValidTarget(Q.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                QNormal.Cast();
+                                Q.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                QCircle.CastIfHitchanceEquals(target, HitChance.Medium);
+                                Q.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                QLinear.CastIfHitchanceEquals(target, HitChance.Medium);
+                                Q.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                         }
                     }
@@ -270,20 +202,20 @@
                 {
                     if (MenuWrapper.W.Combo.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(WNormal.Range);
-                        if (target != null && target.IsValidTarget(WNormal.Range))
+                        var target = TargetSelector.GetTarget(W.Range);
+                        if (target != null && target.IsValidTarget(W.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                WNormal.Cast();
+                                W.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                WCircle.CastIfHitchanceEquals(target, WCircle.MinHitChance);
+                                W.CastIfHitchanceEquals(target, W.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                WLinear.CastIfHitchanceEquals(target, WLinear.MinHitChance);
+                                W.CastIfHitchanceEquals(target, W.MinHitChance);
                             }
                         }
                     }
@@ -292,20 +224,20 @@
                 {
                     if (MenuWrapper.W.Harass.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(WNormal.Range);
-                        if (target != null && target.IsValidTarget(WNormal.Range))
+                        var target = TargetSelector.GetTarget(W.Range);
+                        if (target != null && target.IsValidTarget(W.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                WNormal.Cast();
+                                W.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                WCircle.CastIfHitchanceEquals(target, WCircle.MinHitChance);
+                                W.CastIfHitchanceEquals(target, W.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                WLinear.CastIfHitchanceEquals(target, WLinear.MinHitChance);
+                                W.CastIfHitchanceEquals(target, W.MinHitChance);
                             }
                         }
                     }
@@ -314,21 +246,21 @@
                 {
                     if (MenuWrapper.W.JungleClear.Enabled)
                     {
-                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(WNormal.Range) && x.IsJungle())
+                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(W.Range) && x.IsJungle())
                             .OrderByDescending(x => x.MaxHealth).FirstOrDefault();
-                        if (target != null && target.IsValidTarget(WNormal.Range))
+                        if (target != null && target.IsValidTarget(W.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                WNormal.Cast();
+                                W.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                WCircle.CastIfHitchanceEquals(target, HitChance.Medium);
+                                W.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                WLinear.CastIfHitchanceEquals(target, HitChance.Medium);
+                                W.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                         }
                     }
@@ -340,20 +272,20 @@
                 {
                     if (MenuWrapper.E.Combo.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(ENormal.Range);
-                        if (target != null && target.IsValidTarget(ENormal.Range))
+                        var target = TargetSelector.GetTarget(E.Range);
+                        if (target != null && target.IsValidTarget(E.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                ENormal.Cast();
+                                E.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                ECircle.CastIfHitchanceEquals(target, ECircle.MinHitChance);
+                                E.CastIfHitchanceEquals(target, E.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                ELinear.CastIfHitchanceEquals(target, ELinear.MinHitChance);
+                                E.CastIfHitchanceEquals(target, E.MinHitChance);
                             }
                         }
                     }
@@ -362,20 +294,20 @@
                 {
                     if (MenuWrapper.E.Harass.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(ENormal.Range);
-                        if (target != null && target.IsValidTarget(ENormal.Range))
+                        var target = TargetSelector.GetTarget(E.Range);
+                        if (target != null && target.IsValidTarget(E.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                ENormal.Cast();
+                                E.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                ECircle.CastIfHitchanceEquals(target, ECircle.MinHitChance);
+                                E.CastIfHitchanceEquals(target, E.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                ELinear.CastIfHitchanceEquals(target, ELinear.MinHitChance);
+                                E.CastIfHitchanceEquals(target, E.MinHitChance);
                             }
                         }
                     }
@@ -384,21 +316,21 @@
                 {
                     if (MenuWrapper.E.JungleClear.Enabled)
                     {
-                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(ENormal.Range) && x.IsJungle())
+                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(E.Range) && x.IsJungle())
                             .OrderByDescending(x => x.MaxHealth).FirstOrDefault();
-                        if (target != null && target.IsValidTarget(ENormal.Range))
+                        if (target != null && target.IsValidTarget(E.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                ENormal.Cast();
+                                E.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                ECircle.CastIfHitchanceEquals(target, HitChance.Medium);
+                                E.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                ELinear.CastIfHitchanceEquals(target, HitChance.Medium);
+                                E.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                         }
                     }
@@ -410,20 +342,20 @@
                 {
                     if (MenuWrapper.R.Combo.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(RNormal.Range);
-                        if (target != null && target.IsValidTarget(RNormal.Range))
+                        var target = TargetSelector.GetTarget(R.Range);
+                        if (target != null && target.IsValidTarget(R.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                RNormal.Cast();
+                                R.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                RCircle.CastIfHitchanceEquals(target, RCircle.MinHitChance);
+                                R.CastIfHitchanceEquals(target, R.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                RLinear.CastIfHitchanceEquals(target, RLinear.MinHitChance);
+                                R.CastIfHitchanceEquals(target, R.MinHitChance);
                             }
                         }
                     }
@@ -432,20 +364,20 @@
                 {
                     if (MenuWrapper.R.Harass.Enabled)
                     {
-                        var target = TargetSelector.GetTarget(RNormal.Range);
-                        if (target != null && target.IsValidTarget(RNormal.Range))
+                        var target = TargetSelector.GetTarget(R.Range);
+                        if (target != null && target.IsValidTarget(R.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                RNormal.Cast();
+                                R.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                RCircle.CastIfHitchanceEquals(target, RCircle.MinHitChance);
+                                R.CastIfHitchanceEquals(target, R.MinHitChance);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                RLinear.CastIfHitchanceEquals(target, RLinear.MinHitChance);
+                                R.CastIfHitchanceEquals(target, R.MinHitChance);
                             }
                         }
                     }
@@ -454,21 +386,21 @@
                 {
                     if (MenuWrapper.R.JungleClear.Enabled)
                     {
-                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(RNormal.Range) && x.IsJungle())
+                        var target = GameObjects.Jungle.Where(x => x.IsValidTarget(R.Range) && x.IsJungle())
                             .OrderByDescending(x => x.MaxHealth).FirstOrDefault();
-                        if (target != null && target.IsValidTarget(RNormal.Range))
+                        if (target != null && target.IsValidTarget(R.Range))
                         {
                             if (castType == CastType.SelfCast)
                             {
-                                RNormal.Cast();
+                                R.Cast();
                             }
                             else if (castType == CastType.Circle)
                             {
-                                RCircle.CastIfHitchanceEquals(target, HitChance.Medium);
+                                R.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                             else if (castType == CastType.Linear)
                             {
-                                RLinear.CastIfHitchanceEquals(target, HitChance.Medium);
+                                R.CastIfHitchanceEquals(target, HitChance.Medium);
                             }
                         }
                     }
@@ -549,9 +481,7 @@
         {
             if (sender is MenuSlider)
             {
-                QNormal.Range = MenuWrapper.Q.Range.Value;
-                QCircle.Range = MenuWrapper.Q.Range.Value;
-                QLinear.Range = MenuWrapper.Q.Range.Value;
+                Q.Range = MenuWrapper.Q.Range.Value;
             }
         }
 
@@ -559,9 +489,7 @@
         {
             if (sender is MenuSlider)
             {
-                WNormal.Range = MenuWrapper.W.Range.Value;
-                WCircle.Range = MenuWrapper.W.Range.Value;
-                WLinear.Range = MenuWrapper.W.Range.Value;
+                W.Range = MenuWrapper.W.Range.Value;
             }
         }
 
@@ -569,9 +497,7 @@
         {
             if (sender is MenuSlider)
             {
-                ENormal.Range = MenuWrapper.E.Range.Value;
-                ECircle.Range = MenuWrapper.E.Range.Value;
-                ELinear.Range = MenuWrapper.E.Range.Value;
+                E.Range = MenuWrapper.E.Range.Value;
             }
         }
 
@@ -579,9 +505,7 @@
         {
             if (sender is MenuSlider)
             {
-                RNormal.Range = MenuWrapper.R.Range.Value;
-                RCircle.Range = MenuWrapper.R.Range.Value;
-                RLinear.Range = MenuWrapper.R.Range.Value;
+                R.Range = MenuWrapper.R.Range.Value;
             }
         }
 
@@ -589,9 +513,7 @@
         {
             if (sender is MenuList)
             {
-                QNormal.MinHitChance = (HitChance)(4 - MenuWrapper.Q.Hitchance.Index);
-                QCircle.MinHitChance = (HitChance)(4 - MenuWrapper.Q.Hitchance.Index);
-                QLinear.MinHitChance = (HitChance)(4 - MenuWrapper.Q.Hitchance.Index);
+                Q.MinHitChance = (HitChance)(4 - MenuWrapper.Q.Hitchance.Index);
             }
         }
 
@@ -599,9 +521,7 @@
         {
             if (sender is MenuList)
             {
-                WNormal.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
-                WCircle.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
-                WLinear.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
+                W.MinHitChance = (HitChance)(4 - MenuWrapper.W.Hitchance.Index);
             }
         }
 
@@ -609,9 +529,7 @@
         {
             if (sender is MenuList)
             {
-                ENormal.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
-                ECircle.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
-                ELinear.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
+                E.MinHitChance = (HitChance)(4 - MenuWrapper.E.Hitchance.Index);
             }
         }
 
@@ -619,9 +537,7 @@
         {
             if (sender is MenuList)
             {
-                RNormal.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
-                RCircle.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
-                RLinear.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
+                R.MinHitChance = (HitChance)(4 - MenuWrapper.R.Hitchance.Index);
             }
         }
 
@@ -629,7 +545,19 @@
         {
             if (sender is MenuList)
             {
-                QLinear.Collision = MenuWrapper.Q.Type.Index == 4;
+                var index = MenuWrapper.Q.Type.Index;
+                switch (index)
+                {
+                    case 2:
+                        Q.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
+                        break;
+                    case 3:
+                        Q.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
+                        break;
+                    case 4:
+                        Q.SetSkillshot(0.25f, 60f, float.MaxValue, true, false, SkillshotType.Line);
+                        break;
+                }
             }
         }
 
@@ -637,7 +565,19 @@
         {
             if (sender is MenuList)
             {
-                WLinear.Collision = MenuWrapper.W.Type.Index == 4;
+                var index = MenuWrapper.W.Type.Index;
+                switch (index)
+                {
+                    case 2:
+                        W.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
+                        break;
+                    case 3:
+                        W.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
+                        break;
+                    case 4:
+                        W.SetSkillshot(0.25f, 60f, float.MaxValue, true, false, SkillshotType.Line);
+                        break;
+                }
             }
         }
 
@@ -645,7 +585,19 @@
         {
             if (sender is MenuList)
             {
-                ELinear.Collision = MenuWrapper.E.Type.Index == 4;
+                var index = MenuWrapper.E.Type.Index;
+                switch (index)
+                {
+                    case 2:
+                        E.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
+                        break;
+                    case 3:
+                        E.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
+                        break;
+                    case 4:
+                        E.SetSkillshot(0.25f, 60f, float.MaxValue, true, false, SkillshotType.Line);
+                        break;
+                }
             }
         }
 
@@ -653,7 +605,19 @@
         {
             if (sender is MenuList)
             {
-                RLinear.Collision = MenuWrapper.R.Type.Index == 4;
+                var index = MenuWrapper.R.Type.Index;
+                switch (index)
+                {
+                    case 2:
+                        R.SetSkillshot(0.25f, 80f, float.MaxValue, false, false, SkillshotType.Circle);
+                        break;
+                    case 3:
+                        R.SetSkillshot(0.25f, 60f, float.MaxValue, false, false, SkillshotType.Line);
+                        break;
+                    case 4:
+                        R.SetSkillshot(0.25f, 60f, float.MaxValue, true, false, SkillshotType.Line);
+                        break;
+                }
             }
         }
     }

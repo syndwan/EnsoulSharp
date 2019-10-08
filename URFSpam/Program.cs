@@ -107,7 +107,6 @@
             Console.WriteLine("God know why i make this Assembly");
 
             SpellWrapper.Initializer();
-            SpellWrapper.SetSkillshot();
 
             Game.OnTick += OnTick;
             Drawing.OnDraw += OnDraw;
@@ -149,56 +148,56 @@
 
             if (MenuWrapper.Draw.QRange.Enabled)
             {
-                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.QNormal.IsReady())
+                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.Q.IsReady())
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.QNormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.Q.Range,
                         MenuWrapper.Draw.QColor.Color.ToSystemColor(), 2);
                 }
                 else if(!MenuWrapper.Draw.DrawOnlyReady.Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.QNormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.Q.Range,
                         MenuWrapper.Draw.QColor.Color.ToSystemColor(), 2);
                 }
             }
 
             if (MenuWrapper.Draw.WRange.Enabled)
             {
-                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.WNormal.IsReady())
+                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.W.IsReady())
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.WNormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.W.Range,
                         MenuWrapper.Draw.WColor.Color.ToSystemColor(), 2);
                 }
                 else if (!MenuWrapper.Draw.DrawOnlyReady.Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.WNormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.W.Range,
                         MenuWrapper.Draw.WColor.Color.ToSystemColor(), 2);
                 }
             }
 
             if (MenuWrapper.Draw.ERange.Enabled)
             {
-                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.ENormal.IsReady())
+                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.E.IsReady())
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.ENormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.E.Range,
                         MenuWrapper.Draw.EColor.Color.ToSystemColor(), 2);
                 }
                 else if (!MenuWrapper.Draw.DrawOnlyReady.Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.ENormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.E.Range,
                         MenuWrapper.Draw.EColor.Color.ToSystemColor(), 2);
                 }
             }
 
             if (MenuWrapper.Draw.RRange.Enabled)
             {
-                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.RNormal.IsReady())
+                if (MenuWrapper.Draw.DrawOnlyReady.Enabled && SpellWrapper.R.IsReady())
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.RNormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.R.Range,
                         MenuWrapper.Draw.RColor.Color.ToSystemColor(), 2);
                 }
                 else if (!MenuWrapper.Draw.DrawOnlyReady.Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.RNormal.Range,
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, SpellWrapper.R.Range,
                         MenuWrapper.Draw.RColor.Color.ToSystemColor(), 2);
                 }
             }
