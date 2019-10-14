@@ -1,3 +1,14 @@
+v1.0.0.13
+Rewrite Evade Logic, fow now All Spell default will check about Collision (about some hook spell, i suggest set it false)
+Fix a lots spell Evade + draw issue
+Add 'Evade Mode' Menu Option (Misc Menu)
+Clean up some code and delete some option
+
+Big Thanks @B and @R, thanks they fix a lots bugs and help me solve some bugs
+
+v1.0.0.12
+Test for new Evade Module
+
 v1.0.0.11
 None
 
