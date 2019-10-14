@@ -397,12 +397,35 @@
 
         public static double GetEDMGTwitch(AIBaseClient target)
         {
-            if (target.Buffs.All(b => b.Name.ToLower() != "twitchdeadlyvenom"))
+            if (target == null || !target.IsValidTarget())
             {
                 return 0;
             }
 
-            return E.GetDamage(target);
+            if (!target.HasBuff("twitchdeadlyvenom"))
+            {
+                return 0;
+            }
+
+            var eLevel = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).Level;
+            if (eLevel <= 0)
+            {
+                return 0;
+            }
+
+            var buffCount = GetEStackCount(target);
+
+            var baseDamage = new[] { 0, 20, 30, 40, 50, 60 }[eLevel];
+            var extraDamage = new[] { 0, 15, 20, 25, 30, 35 }[eLevel] + 0.2f * ObjectManager.Player.TotalMagicalDamage +
+                              0.35f * (ObjectManager.Player.TotalAttackDamage - ObjectManager.Player.BaseAttackDamage);
+            var resultDamage =
+                ObjectManager.Player.CalculateDamage(target, DamageType.Physical, baseDamage + extraDamage * buffCount);
+            if (ObjectManager.Player.HasBuff("SummonerExhaust"))
+            {
+                resultDamage *= 0.6f;
+            }
+
+            return resultDamage;
         }
 
         public static int GetEStackCount(AIBaseClient target)
