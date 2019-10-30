@@ -7,6 +7,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
 
@@ -21,8 +22,8 @@
 
     public class Lucian : MyLogic
     {
-        private static bool havePassive = false;
-        private static int lastCastTime = 0;
+        private static bool havePassive;
+        private static int lastCastTime;
 
         public Lucian()
         {
@@ -100,7 +101,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, true, false, true, true);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             AIBaseClient.OnPlayAnimation += OnPlayAnimation;
             Spellbook.OnCastSpell += OnCastSpell;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
@@ -123,7 +124,7 @@
 
             if (Me.HasBuff("LucianR"))
             {
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 return;
             }
 
@@ -355,7 +356,7 @@
 
             if (Args.Animation == "Spell1" || Args.Animation == "Spell2")
             {
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             }
         }
 
@@ -449,7 +450,7 @@
                             {
                                 if (JungleClearOption.UseE && E.IsReady())
                                 {
-                                    E.Cast(Me.PreviousPosition.Extend(Game.CursorPosRaw, 130));
+                                    E.Cast(Me.PreviousPosition.Extend(Game.CursorPos, 130));
                                 }
                                 else if (JungleClearOption.UseQ && Q.IsReady())
                                 {
@@ -475,11 +476,11 @@
                             {
                                 if (LaneClearOption.UseE && E.IsReady())
                                 {
-                                    E.Cast(Me.PreviousPosition.Extend(Game.CursorPosRaw, 130));
+                                    E.Cast(Me.PreviousPosition.Extend(Game.CursorPos, 130));
                                 }
                                 else if (LaneClearOption.UseW && W.IsReady())
                                 {
-                                    W.Cast(Game.CursorPosRaw);
+                                    W.Cast(Game.CursorPos);
                                 }
                             }
                         }
@@ -568,7 +569,7 @@
                 return;
             }
 
-            var dashPos = Me.PreviousPosition.Extend(Game.CursorPosRaw, E.Range);
+            var dashPos = Me.PreviousPosition.Extend(Game.CursorPos, E.Range);
             if (dashPos.IsWall() && ComboOption.GetBool("ComboEWall").Enabled)
             {
                 return;
@@ -594,7 +595,7 @@
             var dashRange = ComboOption.GetBool("ComboEShort").Enabled
                 ? (Me.PreviousPosition.DistanceToCursor() > Me.GetRealAutoAttackRange(target) ? E.Range : 130)
                 : E.Range;
-            var dashPos = Me.PreviousPosition.Extend(Game.CursorPosRaw, dashRange);
+            var dashPos = Me.PreviousPosition.Extend(Game.CursorPos, dashRange);
 
             if (dashPos.IsWall() && ComboOption.GetBool("ComboEWall").Enabled)
             {

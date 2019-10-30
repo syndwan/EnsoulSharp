@@ -649,7 +649,7 @@
             {
                 ObjectManager.Player
                     .IssueOrder(GameObjectOrder.MoveTo,
-                        ObjectManager.Player.PreviousPosition.Extend(Game.CursorPosRaw, 100));
+                        ObjectManager.Player.PreviousPosition.Extend(Game.CursorPos, 100));
                 MyLogic.lastCancelTime = Variables.GameTimeTickCount;
             }
         }
@@ -663,7 +663,7 @@
 
             var slot =
                 source.InventoryItems.FirstOrDefault(
-                    x => string.Equals(itemName, x.ItemData.SpellName, StringComparison.CurrentCultureIgnoreCase));
+                    x => string.Equals(itemName, x.SpellName, StringComparison.CurrentCultureIgnoreCase));
             if (slot != null && slot.SpellSlot != SpellSlot.Unknown)
             {
                 return slot.SpellSlot;
@@ -732,7 +732,7 @@
 
         public static void GetNames(this AIHeroClient source)
         {
-            foreach (var slot in source.InventoryItems.Select(x => x.ItemData))
+            foreach (var slot in source.InventoryItems)
             {
                 if (!slot.SpellName.ToLower().Contains("no script"))
                 {

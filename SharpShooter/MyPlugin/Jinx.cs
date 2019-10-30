@@ -7,6 +7,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
 
@@ -90,7 +91,7 @@
             DrawOption.AddE(E);
             DrawOption.AddDamageIndicatorToHero(false, true, false, true, true);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             Orbwalker.OnAction += OnAction;
             //Gapcloser.OnGapcloser += OnGapcloser;
         }
@@ -197,7 +198,7 @@
 
         private static void SemiRLogic()
         {
-            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
             if (!R.IsReady())
             {

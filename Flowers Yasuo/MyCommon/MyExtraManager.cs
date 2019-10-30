@@ -40,7 +40,7 @@
 
         public static AIBaseClient GetNearObj()
         {
-            var pos = Game.CursorPosRaw;
+            var pos = Game.CursorPos;
             var obj = new List<AIBaseClient>();
 
             obj.AddRange(GameObjects.EnemyMinions.Where(x => x.IsValidTarget(475) && x.MaxHealth > 5));
@@ -96,7 +96,7 @@
             if (target.DistanceToPlayer() > (ObjectManager.Player.AttackRange + ObjectManager.Player.BoundingRadius) * 1.2 ||
                 target.DistanceToPlayer() >
                 (ObjectManager.Player.AttackRange + ObjectManager.Player.BoundingRadius + target.BoundingRadius) * 0.8 ||
-                Game.CursorPosRaw.DistanceToPlayer() >=
+                Game.CursorPos.DistanceToPlayer() >=
                 (ObjectManager.Player.AttackRange + ObjectManager.Player.BoundingRadius) * 1.2)
             {
                 var dashtargets = new List<AIBaseClient>();
@@ -113,7 +113,7 @@
                 {
                     var dash =
                         dashtargets.Where(x => x.IsValidTarget(475f) && IsSafePosition(PosAfterE(x)))
-                            .MinOrDefault(x => PosAfterE(x).Distance(Game.CursorPosRaw));
+                            .MinOrDefault(x => PosAfterE(x).Distance(Game.CursorPos));
 
                     if (dash != null && dash.IsValidTarget(475f) && CanCastE(dash) &&
                         target.DistanceToPlayer() >= GapcloserDis && ObjectManager.Player.IsFacing(dash) &&

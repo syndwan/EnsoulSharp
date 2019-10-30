@@ -7,6 +7,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
 
@@ -90,7 +91,7 @@
             DrawOption.AddE(E);
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             //Gapcloser.OnGapcloser += OnGapcloser;
             Orbwalker.OnAction += OnAction;
         }
@@ -138,7 +139,7 @@
 
         private static void OneKeyCastR()
         {
-            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
             if (!R.IsReady())
             {
@@ -173,7 +174,7 @@
                 }
 
                 if (Me.GetSpellDamage(target, SpellSlot.R) > target.Health + target.HPRegenRate * 2 &&
-                    target.Path.Length < 2 &&
+                    target.Path.Count < 2 &&
                     R.GetPrediction(target).Hitchance >= HitChance.High)
                 {
                     R.Cast(target);
@@ -289,7 +290,7 @@
                 if (target.DistanceToPlayer() > Me.GetRealAutoAttackRange(target) && target.IsValidTarget())
                 {
                     if (target.Health < Me.GetSpellDamage(target, SpellSlot.E) + Me.GetAutoAttackDamage(target) &&
-                        target.PreviousPosition.Distance(Game.CursorPosRaw) < Me.PreviousPosition.Distance(Game.CursorPosRaw))
+                        target.PreviousPosition.Distance(Game.CursorPos) < Me.PreviousPosition.Distance(Game.CursorPos))
                     {
                         var CastEPos = Me.PreviousPosition.Extend(target.PreviousPosition, 475f);
 
@@ -310,7 +311,7 @@
                     if (target.Health <
                         Me.GetSpellDamage(target, SpellSlot.E) + Me.GetSpellDamage(target, SpellSlot.W) &&
                         W.IsReady() &&
-                        target.PreviousPosition.Distance(Game.CursorPosRaw) + 350 < Me.PreviousPosition.Distance(Game.CursorPosRaw))
+                        target.PreviousPosition.Distance(Game.CursorPos) + 350 < Me.PreviousPosition.Distance(Game.CursorPos))
                     {
                         var CastEPos = Me.PreviousPosition.Extend(target.PreviousPosition, 475f);
 
@@ -331,7 +332,7 @@
                     if (target.Health <
                         Me.GetSpellDamage(target, SpellSlot.E) + Me.GetSpellDamage(target, SpellSlot.Q) &&
                         Q.IsReady() &&
-                        target.PreviousPosition.Distance(Game.CursorPosRaw) + 300 < Me.PreviousPosition.Distance(Game.CursorPosRaw))
+                        target.PreviousPosition.Distance(Game.CursorPos) + 300 < Me.PreviousPosition.Distance(Game.CursorPos))
                     {
                         var CastEPos = Me.PreviousPosition.Extend(target.PreviousPosition, 475f);
 

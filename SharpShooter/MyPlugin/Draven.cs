@@ -10,6 +10,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
     using EnsoulSharp.SDK.Utility;
@@ -28,7 +29,7 @@
     {
         private static Dictionary<GameObject, int> AxeList { get; } = new Dictionary<GameObject, int>();
 
-        private static Vector3 OrbwalkerPoint { get; set; } = Game.CursorPosRaw;
+        private static Vector3 OrbwalkerPoint { get; set; } = Game.CursorPos;
 
         private static int AxeCount => (Me.HasBuff("dravenspinning") ? 1 : 0) + (Me.HasBuff("dravenspinningleft") ? 1 : 0) + AxeList.Count;
 
@@ -115,7 +116,7 @@
 
             AxeOption.GetKey("CancelKey1").ValueChanged += OnCancelValueChange;
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             Game.OnWndProc += OnWndProc;
             GameObject.OnCreate += (sender, args) => OnCreate(sender);
             GameObject.OnDelete += (sender, args) => OnDestroy(sender);
@@ -327,7 +328,7 @@
         {
             if (MiscOption.GetKey("R", "SemiRKey").Active)
             {
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
                 if (Me.Spellbook.GetSpell(SpellSlot.R).Level > 0 && R.IsReady())
                 {
@@ -567,7 +568,7 @@
             }
         }
 
-        private static void OnWndProc(WndEventArgs Args)
+        private static void OnWndProc(GameWndProcEventArgs Args)
         {
             if (AxeOption.GetBool("CancelCatch").Enabled)
             {
@@ -686,7 +687,7 @@
 
             if (DrawOption.GetBool("AxeRange").Enabled)
             {
-                Render.Circle.DrawCircle(Game.CursorPosRaw, AxeOption.GetSlider("CatchRange").Value, Color.FromArgb(0, 255, 161), 1);
+                Render.Circle.DrawCircle(Game.CursorPos, AxeOption.GetSlider("CatchRange").Value, Color.FromArgb(0, 255, 161), 1);
             }
 
             if (DrawOption.GetBool("AxePosition").Enabled)

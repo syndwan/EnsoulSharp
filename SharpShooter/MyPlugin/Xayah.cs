@@ -10,6 +10,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI;
     using EnsoulSharp.SDK.Prediction;
 
@@ -88,7 +89,7 @@
 
             CPrediction.BoundingRadiusMultiplicator = 1.15f;
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             GameObject.OnCreate += (sender, args) => OnCreate(sender);
             GameObject.OnDelete += (sender, args) => OnDestroy(sender);
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
@@ -109,7 +110,7 @@
 
             if (Me.HasBuff("XayahR"))
             {
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 return;
             }
 

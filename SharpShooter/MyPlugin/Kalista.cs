@@ -7,6 +7,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.Prediction;
 
     using SharpShooter.MyBase;
@@ -18,7 +19,7 @@
 
     public class Kalista : MyLogic
     {
-        private static int lastWTime, lastETime;
+        private static int lastETime;
 
         public Kalista()
         {
@@ -85,7 +86,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(false, false, true, false, false);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             Orbwalker.OnAction += OnAction;
         }
@@ -278,7 +279,7 @@
             {
                 var AttackUnit =
                     GameObjects.EnemyMinions.Where(x => x.IsValidTarget(Me.GetRealAutoAttackRange(x)))
-                        .OrderBy(x => x.Distance(Game.CursorPosRaw))
+                        .OrderBy(x => x.Distance(Game.CursorPos))
                         .FirstOrDefault();
 
                 if (AttackUnit != null && !AttackUnit.IsDead && AttackUnit.InAutoAttackRange())
@@ -434,9 +435,6 @@
 
             switch (Args.SData.Name.ToLower())
             {
-                case "kalistaw":
-                    lastWTime = Variables.GameTimeTickCount;
-                    break;
                 case "kalistaexpunge":
                 case "kalistaexpungewrapper":
                 case "kalistadummyspell":

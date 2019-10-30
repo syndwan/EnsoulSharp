@@ -26,7 +26,7 @@
                     mainMenu.Add(new MenuSeparator("MyManaManager.SpellFarmSettings", ":: Spell Farm Logic"));
                     mainMenu.Add(new MenuBool("MyManaManager.SpellFarm", "Use Spell To Farm(Mouse Scrool)")).Permashow();
 
-                    Game.OnWndProc += delegate (WndEventArgs Args)
+                    Game.OnWndProc += delegate (GameWndProcEventArgs Args)
                     {
                         try
                         {

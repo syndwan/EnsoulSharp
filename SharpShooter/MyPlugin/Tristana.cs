@@ -7,6 +7,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
 
@@ -81,7 +82,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(false, false, true, true, true);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             //Gapcloser.OnGapcloser += OnGapcloser;
             Orbwalker.OnAction += OnAction;
         }

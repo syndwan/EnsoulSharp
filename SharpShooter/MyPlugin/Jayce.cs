@@ -10,6 +10,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
     using EnsoulSharp.SDK.Utility;
@@ -131,7 +132,7 @@
             DrawOption.AddDamageIndicatorToHero(true, true, true, false, false);
             DrawOption.AddBool("DrawCoolDown", "Draw Spell CoolDown");
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             Orbwalker.OnAction += OnAction;
             GameObject.OnCreate += (sender, args) => OnCreate(sender);
             //Gapcloser.OnGapcloser += OnGapcloser;
@@ -422,7 +423,7 @@
 
         private static void CastQCannonMouse()
         {
-            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
             if (isMelee && !R.IsReady())
             {
@@ -440,12 +441,12 @@
                 if (MiscOption.GetList("QE", "SemiQEMode").Index == 1)
                 {
                     var gateDis = MiscOption.GetSlider("E", "gatePlace").Value;
-                    var gateVector = Me.PreviousPosition + Vector3.Normalize(Game.CursorPosRaw - Me.PreviousPosition) * gateDis;
+                    var gateVector = Me.PreviousPosition + Vector3.Normalize(Game.CursorPos - Me.PreviousPosition) * gateDis;
 
                     if (E.IsReady() && QE.IsReady())
                     {
                         E.Cast(gateVector);
-                        QE.Cast(Game.CursorPosRaw);
+                        QE.Cast(Game.CursorPos);
                     }
                 }
                 else

@@ -29,7 +29,7 @@
                     mainMenu.Add(new MenuKeyBind("MyManaManager.SpellHarass", "Use Spell To Harass(In Clear Mode)",
                         System.Windows.Forms.Keys.H, KeyBindType.Toggle){Active = true}).Permashow();
 
-                    Game.OnWndProc += delegate (WndEventArgs Args)
+                    Game.OnWndProc += delegate (GameWndProcEventArgs Args)
                     {
                         try
                         {

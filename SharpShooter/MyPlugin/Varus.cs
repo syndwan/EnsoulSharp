@@ -7,6 +7,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
 
@@ -89,7 +90,7 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             //Gapcloser.OnGapcloser += OnGapcloser;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             Spellbook.OnCastSpell += OnCastSpell;
@@ -104,7 +105,7 @@
 
             if (Me.HasBuff("VarusQLaunch") || Me.HasBuff("VarusQ"))
             {
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             }
 
             if (Me.IsWindingUp)
@@ -135,7 +136,7 @@
 
         private static void SemiRLogic()
         {
-            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+            Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
             if (R.IsReady())
             {

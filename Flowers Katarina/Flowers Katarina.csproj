@@ -37,24 +37,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnsoulSharp.SDK">
-      <HintPath>E:\EnsoulSharp\Loader\System\EnsoulSharp.SDK.dll</HintPath>
+      <HintPath>E:\EnsoulSharp\System\EnsoulSharp.SDK.dll</HintPath>
     </Reference>
     <Reference Include="EnsoulSharp.Wrapper">
-      <HintPath>E:\EnsoulSharp\Loader\System\EnsoulSharp.Wrapper.dll</HintPath>
+      <HintPath>E:\EnsoulSharp\System\EnsoulSharp.Wrapper.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>E:\EnsoulSharp\Loader\System\SharpDX.dll</HintPath>
+      <HintPath>E:\EnsoulSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyBase\MyChampions.cs" />

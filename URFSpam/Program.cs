@@ -4,6 +4,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI;
     using EnsoulSharp.SDK.Utility;
 
@@ -108,7 +109,7 @@
 
             SpellWrapper.Initializer();
 
-            Game.OnTick += OnTick;
+            Tick.OnTick += OnTick;
             Drawing.OnDraw += OnDraw;
         }
 

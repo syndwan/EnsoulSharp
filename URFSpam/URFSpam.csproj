@@ -34,13 +34,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnsoulSharp.SDK">
-      <HintPath>..\..\..\Loader\System\EnsoulSharp.SDK.dll</HintPath>
+      <HintPath>E:\EnsoulSharp\System\EnsoulSharp.SDK.dll</HintPath>
     </Reference>
     <Reference Include="EnsoulSharp.Wrapper">
-      <HintPath>..\..\..\Loader\System\EnsoulSharp.Wrapper.dll</HintPath>
+      <HintPath>E:\EnsoulSharp\System\EnsoulSharp.Wrapper.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\Loader\System\SharpDX.dll</HintPath>
+      <HintPath>E:\EnsoulSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

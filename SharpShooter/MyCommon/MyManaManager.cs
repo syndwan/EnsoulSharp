@@ -1,8 +1,9 @@
 ﻿namespace SharpShooter.MyCommon
 {
-    using EnsoulSharp;
     #region 
 
+    using EnsoulSharp;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI;
     using EnsoulSharp.SDK.MenuUI.Values;
 
@@ -40,7 +41,7 @@
                 farmMenu["MyManaManager.SpellFarm"].GetValue<MenuBool>().Permashow();
                 farmMenu["MyManaManager.SpellHarass"].GetValue<MenuBool>().Permashow();
 
-                Game.OnWndProc += delegate (WndEventArgs Args)
+                Game.OnWndProc += delegate (GameWndProcEventArgs Args)
                 {
                     if (Args.Msg == 519)
                     {
@@ -56,7 +57,7 @@
                     }
                 };
 
-                Game.OnTick += delegate
+                Tick.OnTick += delegate
                 {
                     SpellFarm = farmMenu["MyManaManager.SpellFarmMode"].GetValue<MenuList>().Index == 0 && FarmScrool ||
                                 farmMenu["MyManaManager.SpellFarmMode"].GetValue<MenuList>().Index == 1 &&

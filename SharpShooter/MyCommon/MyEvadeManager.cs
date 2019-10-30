@@ -8,6 +8,7 @@
     using SharpDX;
 
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.MenuUI;
     using EnsoulSharp;
@@ -54,7 +55,7 @@
                 heroMenu?.Add(new MenuBool("BlockSpell" + spell.SpellSlot, spell.CharacterName + " " + spell.SpellSlot));
             }
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
             AIBaseClient.OnPlayAnimation += OnPlayAnimation;
             Dash.OnDash += OnDash;
@@ -639,7 +640,7 @@
             }
             else if (ObjectManager.Player.CharacterName == "Xayah")
             {
-                ObjectManager.Player.Spellbook.CastSpell(SpellSlot.R, target?.Position ?? Game.CursorPosRaw);
+                ObjectManager.Player.Spellbook.CastSpell(SpellSlot.R, target?.Position ?? Game.CursorPos);
             }
         }
 
@@ -662,8 +663,8 @@
                 return;
             }
 
-            if (Menu["Block" + name.ToLower()]["BlockSpell" + spellslot.ToString()] != null &&
-                Menu["Block" + name.ToLower()]["BlockSpell" + spellslot.ToString()].GetValue<MenuBool>().Enabled)
+            if (Menu["Block" + name.ToLower()]["BlockSpell" + spellslot] != null &&
+                Menu["Block" + name.ToLower()]["BlockSpell" + spellslot].GetValue<MenuBool>().Enabled)
             {
                 var target =
                    GameObjects.EnemyHeroes.Where(x => !x.IsDead && x.Distance(ObjectManager.Player) <= 750f)
@@ -676,7 +677,7 @@
                 }
                 else if (ObjectManager.Player.CharacterName == "Xayah")
                 {
-                    ObjectManager.Player.Spellbook.CastSpell(SpellSlot.R, target?.Position ?? Game.CursorPosRaw);
+                    ObjectManager.Player.Spellbook.CastSpell(SpellSlot.R, target?.Position ?? Game.CursorPos);
                 }
             }
         }

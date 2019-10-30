@@ -9,6 +9,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
 
     using SharpShooter.MyBase;
     using SharpShooter.MyCommon;
@@ -90,7 +91,7 @@
             DrawOption.AddE(E);
             DrawOption.AddDamageIndicatorToHero(false, true, true, false, true);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             Orbwalker.OnAction += OnAction;
             //Gapcloser.OnGapcloser += OnGapcloser;
         }
@@ -358,11 +359,11 @@
                     if (minions.Any() && minions.Count > 1)
                     {
                         var minion = minions.OrderBy(m => m.Health).FirstOrDefault();
-                        var afterQPosition = Me.PreviousPosition.Extend(Game.CursorPosRaw, Q.Range);
+                        var afterQPosition = Me.PreviousPosition.Extend(Game.CursorPos, Q.Range);
 
                         if (minion != null && afterQPosition.Distance(minion.PreviousPosition) <= Me.AttackRange + Me.BoundingRadius)
                         {
-                            Q.Cast(Game.CursorPosRaw);
+                            Q.Cast(Game.CursorPos);
                         }
                     }
                 }
@@ -480,12 +481,12 @@
                                             if (minions.Any() && minions.Count >= 1)
                                             {
                                                 var minion = minions.OrderBy(x => x.Health).FirstOrDefault();
-                                                var afterQPosition = Me.PreviousPosition.Extend(Game.CursorPosRaw, Q.Range);
+                                                var afterQPosition = Me.PreviousPosition.Extend(Game.CursorPos, Q.Range);
 
                                                 if (minion != null &&
                                                     afterQPosition.Distance(minion.PreviousPosition) <= Me.AttackRange + Me.BoundingRadius)
                                                 {
-                                                    Q.Cast(Game.CursorPosRaw);
+                                                    Q.Cast(Game.CursorPos);
                                                 }
                                             }
                                         }
@@ -494,7 +495,7 @@
                                     {
                                         if (JungleClearOption.HasEnouguMana() && JungleClearOption.UseQ)
                                         {
-                                            Q.Cast(Game.CursorPosRaw);
+                                            Q.Cast(Game.CursorPos);
                                         }
                                     }
                                 }
@@ -515,7 +516,7 @@
                                     {
                                         if (Me.CanMoveMent())
                                         {
-                                            Q.Cast(Game.CursorPosRaw);
+                                            Q.Cast(Game.CursorPos);
                                         }
                                     }
                                 }
@@ -564,7 +565,7 @@
 
         private static Vector3 GetDashQPos()
         {
-            var firstQPos = Me.PreviousPosition.Extend(Game.CursorPosRaw, Q.Range);
+            var firstQPos = Me.PreviousPosition.Extend(Game.CursorPos, Q.Range);
             var allPoint = MyExtraManager.GetCirclePoints(Q.Range).ToList();
 
             foreach (var point in allPoint)
@@ -623,7 +624,7 @@
                 return;
             }
 
-            var qPosition = Me.Position.Extend(Game.CursorPosRaw, Q.Range);
+            var qPosition = Me.Position.Extend(Game.CursorPos, Q.Range);
             var targetDisQ = target.Position.Distance(qPosition);
 
             if (MiscOption.GetList("Q", "QTurret").Index == 1 || MiscOption.GetList("Q", "QTurret").Index == 2)
@@ -674,7 +675,7 @@
             {
                 if (Me.CanMoveMent())
                 {
-                    Q.Cast(Game.CursorPosRaw);
+                    Q.Cast(Game.CursorPos);
                 }
             }
         }

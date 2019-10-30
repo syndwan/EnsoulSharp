@@ -254,7 +254,7 @@
                    !target.HasBuff("zhonyasringshield") && !target.HasBuff("bardrstasis");
         }
 
-        public static SpellDataInstClient GetBasicSpell(this Spell spell)
+        public static SpellDataInst GetBasicSpell(this Spell spell)
         {
             return ObjectManager.Player.Spellbook.GetSpell(spell.Slot);
         }

@@ -9,6 +9,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Utility;
 
@@ -24,7 +25,7 @@
         {
             try
             {
-                Game.OnTick += Args => OnUpdate();
+                Tick.OnTick += Args => OnUpdate();
                 GameObject.OnCreate += (sender, Args) => OnCreate(sender);
                 GameObject.OnDelete += (sender, Args) => OnDestroy(sender);
                 AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
@@ -102,7 +103,7 @@
         {
             try
             {
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
                 if (FleeMenu["FlowersKatarina.FleeMenu.W"].GetValue<MenuBool>().Enabled && W.IsReady())
                 {
@@ -115,12 +116,12 @@
 
                     if (fleeList.Any())
                     {
-                        var nearest = fleeList.MinOrDefault(x => x.Position.Distance(Game.CursorPosRaw));
+                        var nearest = fleeList.MinOrDefault(x => x.Position.Distance(Game.CursorPos));
 
                         if (nearest != null && nearest.Position.DistanceToCursor() < Me.DistanceToCursor() &&
                             nearest.Position.DistanceToPlayer() > 300)
                         {
-                            var pos = nearest.Position.ToVector2().Extend(Game.CursorPosRaw.ToVector2(), 150);
+                            var pos = nearest.Position.ToVector2().Extend(Game.CursorPos.ToVector2(), 150);
                             E.Cast(pos);
                         }
                     }
@@ -142,11 +143,11 @@
 
                     if (fleeList.Any())
                     {
-                        var nearest = fleeList.MinOrDefault(x => x.Position.Distance(Game.CursorPosRaw));
+                        var nearest = fleeList.MinOrDefault(x => x.Position.Distance(Game.CursorPos));
 
                         if (nearest != null && nearest.Position.DistanceToPlayer() <= E.Range)
                         {
-                            var pos = nearest.Position.ToVector2().Extend(Game.CursorPosRaw.ToVector2(), 150);
+                            var pos = nearest.Position.ToVector2().Extend(Game.CursorPos.ToVector2(), 150);
 
                             E.Cast(pos);
                         }

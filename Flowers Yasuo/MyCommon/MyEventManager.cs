@@ -10,6 +10,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Utility;
 
@@ -26,7 +27,7 @@
         {
             try
             {
-                Game.OnTick += Args => OnUpdate();
+                Tick.OnTick += Args => OnUpdate();
                 AIBaseClient.OnBuffGain += OnBuffGain;
                 AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
                 AIBaseClient.OnPlayAnimation += OnPlayAnimation;
@@ -110,7 +111,7 @@
         {
             try
             {
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosCenter);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
                 if (IsMyDashing)
                 {
@@ -159,7 +160,7 @@
             {
                 if (Orbwalker.ActiveMode == OrbwalkerMode.None && FlashSlot != SpellSlot.Unknown && Flash.IsReady())
                 {
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
                     if (!HaveQ3)
                     {
@@ -941,7 +942,7 @@
                         DelayAction.Add(300 + (Game.Ping / 2 + 10), () =>
                         {
                             Orbwalker.ResetAutoAttackTimer();
-                            Me.IssueOrder(GameObjectOrder.MoveTo, Me.Position.Extend(Game.CursorPosRaw, 50));
+                            Me.IssueOrder(GameObjectOrder.MoveTo, Me.Position.Extend(Game.CursorPos, 50));
                             Orbwalker.AttackState = true;
                         });
                     }

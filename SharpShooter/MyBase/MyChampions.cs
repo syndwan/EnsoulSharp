@@ -64,8 +64,8 @@
                               " Load Successful! Made By NightMoon");
             Console.WriteLine("QQ群: 598027398");
 
-            Chat.Print("<font size='26'><font color='#9999CC'>SharpShooter</font></font> <font color='#FF5640'> Load Successful! Made By NightMoon</font>");
-            Chat.Print("<font color='#FF5640'>CN QQ QUN: 598027398 </font>");
+            Game.Print("<font size='26'><font color='#9999CC'>SharpShooter</font></font> <font color='#FF5640'> Load Successful! Made By NightMoon</font>");
+            Game.Print("<font color='#FF5640'>CN QQ QUN: 598027398 </font>");
         }
 
         public static object LoadChampionsPlugin()

@@ -9,6 +9,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.MenuUI.Values;
     using EnsoulSharp.SDK.Prediction;
 
@@ -23,7 +24,7 @@
 
     public class Urgot : MyLogic
     {
-        private static int lastQTime, lastWTime, lastETime, lastPressTime;
+        private static int lastQTime, lastETime, lastPressTime;
 
         private static bool isWActive => W.Name.ToLower() == "urgotwcancel";
         private static bool isRActive => R.Name.ToLower() == "urgotrrecast";
@@ -105,7 +106,7 @@
             DrawOption.AddDamageIndicatorToHero(true, true, true, true, true);
 
             AIBaseClient.OnProcessSpellCast += OnProcessSpellCast;
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             Orbwalker.OnAction += OnAction;
         }
 
@@ -117,9 +118,6 @@
                 {
                     case SpellSlot.Q:
                         lastQTime = Variables.GameTimeTickCount;
-                        break;
-                    case SpellSlot.W:
-                        lastWTime = Variables.GameTimeTickCount;
                         break;
                     case SpellSlot.E:
                         lastETime = Variables.GameTimeTickCount;
@@ -138,7 +136,7 @@
             if (isWActive)
             {
                 Orbwalker.AttackState = false;
-                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
+                Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             }
             else
             {

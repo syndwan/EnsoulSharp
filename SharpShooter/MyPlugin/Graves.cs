@@ -7,6 +7,7 @@
 
     using EnsoulSharp;
     using EnsoulSharp.SDK;
+    using EnsoulSharp.SDK.Events;
     using EnsoulSharp.SDK.Prediction;
     using EnsoulSharp.SDK.Utility;
 
@@ -79,10 +80,10 @@
             DrawOption.AddR(R);
             DrawOption.AddDamageIndicatorToHero(true, true, false, true, true);
 
-            Game.OnTick += OnUpdate;
+            Tick.OnTick += OnUpdate;
             Orbwalker.OnAction += OnAction;
             //Gapcloser.OnGapcloser += OnGapcloser;
-            AIBaseClient.OnBasicAttack += OnBasicAttack;
+            AIBaseClient.OnDoCast += OnBasicAttack;
             Spellbook.OnCastSpell += OnCastSpell;
         }
 
@@ -370,7 +371,7 @@
 
         private static void OnBasicAttack(AIBaseClient sender, AIBaseClientProcessSpellCastEventArgs Args)
         {
-            if (!sender.IsMe)
+            if (!sender.IsMe || !Orbwalker.IsAutoAttack(Args.SData.Name))
             {
                 return;
             }
@@ -439,7 +440,7 @@
                 return false;
             }
 
-            var ePosition = Me.Position.Extend(Game.CursorPosRaw, E.Range);
+            var ePosition = Me.Position.Extend(Game.CursorPos, E.Range);
             if (ePosition.IsUnderEnemyTurret() && Me.HealthPercent <= 50)
             {
                 return false;
@@ -487,21 +488,21 @@
             }
 
             if (/*target.Health < Me.GetAutoAttackDamage(target) * 2 &&*/
-                target.Distance(Me.Position.Extend(Game.CursorPosRaw, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
+                target.Distance(Me.Position.Extend(Game.CursorPos, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
             {
-                return E.Cast(Me.Position.Extend(Game.CursorPosRaw, E.Range));
+                return E.Cast(Me.Position.Extend(Game.CursorPos, E.Range));
             }
 
             if (/*!Me.HasBuff("gravesbasicattackammo2") && Me.HasBuff("gravesbasicattackammo1") &&*/
-                     target.Distance(Me.Position.Extend(Game.CursorPosRaw, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
+                     target.Distance(Me.Position.Extend(Game.CursorPos, E.Range)) <= Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20)
             {
-                return E.Cast(Me.Position.Extend(Game.CursorPosRaw, E.Range));
+                return E.Cast(Me.Position.Extend(Game.CursorPos, E.Range));
             }
 
             if (/*!Me.HasBuff("gravesbasicattackammo2") && !Me.HasBuff("gravesbasicattackammo1") &&*/
                      target.IsValidTarget(Me.AttackRange + Me.BoundingRadius + target.BoundingRadius - 20))
             {
-                return E.Cast(Me.Position.Extend(Game.CursorPosRaw, E.Range));
+                return E.Cast(Me.Position.Extend(Game.CursorPos, E.Range));
             }
 
             return false;
